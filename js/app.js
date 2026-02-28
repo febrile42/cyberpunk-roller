@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
     burst.bullets.forEach((bullet, i) => {
       const bulletBlocked = bullet.armor && !bullet.armor.penetrated;
       html += `<div class="bullet-hit${bulletBlocked ? ' blocked' : ''}">`;
-      html += `<span class="bullet-num">&#x2022; Bullet ${i + 1}</span>`;
+      html += `<span class="bullet-num">Bullet ${i + 1}</span>`;
       html += `<span class="bullet-location-compact">${escapeHtml(bullet.location)}</span>`;
       html += renderDamageCompact(bullet.rawDamage, bullet.armor);
       html += `</div>`;
