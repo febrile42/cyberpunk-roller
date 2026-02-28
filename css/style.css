@@ -559,6 +559,57 @@ button {
   border-color: var(--accent);
 }
 
+/* ── Target damage tracker ───────────────────────────────────── */
+
+.target-dmg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px 8px;
+  background: rgba(192, 69, 69, 0.04);
+  border: 1px solid rgba(192, 69, 69, 0.12);
+  margin-bottom: 4px;
+}
+
+.dmg-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.dmg-field label {
+  color: var(--text-dim);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.dmg-value-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 38px;
+}
+
+.dmg-total {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.dmg-total.has-damage {
+  color: var(--miss-fg);
+}
+
+.dmg-delta {
+  font-size: 8px;
+  color: #d06060;
+  line-height: 1;
+}
+
 /* ── Target rows ─────────────────────────────────────────────── */
 
 .target-row {

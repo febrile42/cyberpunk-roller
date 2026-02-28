@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
     { key: 'leftLeg',  label: 'L.LEG' },
   ];
 
+  const LOCATION_KEY_MAP = {
+    'Head':      'head',
+    'Torso':     'torso',
+    'Right Arm': 'rightArm',
+    'Left Arm':  'leftArm',
+    'Right Leg': 'rightLeg',
+    'Left Leg':  'leftLeg',
+  };
+
   // ── Combat form references ───────────────────────────────────────────────
 
   const form        = document.getElementById('combat-form');
@@ -28,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── localStorage state ───────────────────────────────────────────────────
 
   function defaultSP() {
+    return { head: 0, torso: 0, rightArm: 0, leftArm: 0, rightLeg: 0, leftLeg: 0 };
+  }
+
+  function defaultDamage() {
     return { head: 0, torso: 0, rightArm: 0, leftArm: 0, rightLeg: 0, leftLeg: 0 };
   }
 
@@ -54,10 +67,50 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateActiveSP(finalSP) {
-    const state = loadState();
+    const state  = loadState();
     const target = state.targets.find(t => t.id === state.activeTargetId);
     if (!target) return;
     target.sp = finalSP;
+    saveState(state);
+    // renderTargets() is deferred to updateActiveDamage which always follows
+  }
+
+  // Computes per-location passthrough damage from a combat response.
+  function computeRunDamage(data) {
+    const runDmg = defaultDamage();
+
+    function tally(shot) {
+      if (!shot.hit || !shot.location) return;
+      const key = LOCATION_KEY_MAP[shot.location];
+      if (!key) return;
+      if (shot.armor) {
+        if (shot.armor.penetrated) runDmg[key] += shot.armor.passthrough;
+      } else {
+        // No armor tracked — full raw damage goes through
+        runDmg[key] += shot.rawDamage || 0;
+      }
+    }
+
+    if (data.mode === 'single' || data.mode === 'auto') {
+      (data.shots  || []).forEach(tally);
+    } else if (data.mode === 'burst') {
+      (data.bursts || []).forEach(burst => (burst.bullets || []).forEach(tally));
+    }
+
+    return runDmg;
+  }
+
+  // Adds runDamage to the active target's cumulative damage and stores
+  // runDamage as lastRunDamage so the per-run delta can be displayed.
+  function updateActiveDamage(runDamage) {
+    const state  = loadState();
+    const target = state.targets.find(t => t.id === state.activeTargetId);
+    if (!target) return;
+    if (!target.damage) target.damage = defaultDamage();
+    SP_LOCATIONS.forEach(loc => {
+      target.damage[loc.key] = (target.damage[loc.key] || 0) + (runDamage[loc.key] || 0);
+    });
+    target.lastRunDamage = { ...runDamage };
     saveState(state);
     renderTargets();
   }
@@ -72,7 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
       (isGeneric ? `Generic ${genericCount + 1}` : `Unique ${uniqueCount + 1}`);
 
     const target = { id: 't' + Date.now(), name: autoName, generic: isGeneric };
-    target.sp = isGeneric ? { ...state.genericSP } : defaultSP();
+    target.sp            = isGeneric ? { ...state.genericSP } : defaultSP();
+    target.damage        = defaultDamage();
+    target.lastRunDamage = defaultDamage();
 
     state.targets.push(target);
     if (!state.activeTargetId) state.activeTargetId = target.id;
@@ -224,6 +279,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Persist SP changes caused by this combat round
       if (data.finalSP) updateActiveSP(data.finalSP);
+
+      // Track passthrough damage on the active target (clears previous run delta too)
+      const activeId = loadState().activeTargetId;
+      if (activeId) updateActiveDamage(computeRunDamage(data));
 
       renderResults(data);
 
@@ -385,6 +444,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Target panel rendering ───────────────────────────────────────────────
 
+  function renderDamageRow(target) {
+    const damage     = target.damage        || defaultDamage();
+    const lastRunDmg = target.lastRunDamage || defaultDamage();
+    let html = `<div class="target-dmg-row">`;
+    SP_LOCATIONS.forEach(loc => {
+      const total    = damage[loc.key]     || 0;
+      const runDelta = lastRunDmg[loc.key] || 0;
+      const hasDmg   = total > 0;
+      html += `<div class="dmg-field">` +
+        `<label>${loc.label}</label>` +
+        `<div class="dmg-value-wrap">` +
+        `<span class="dmg-total${hasDmg ? ' has-damage' : ''}">${hasDmg ? total : '&mdash;'}</span>` +
+        (runDelta > 0 ? `<sup class="dmg-delta">+${runDelta}</sup>` : '') +
+        `</div>` +
+        `</div>`;
+    });
+    html += `</div>`;
+    return html;
+  }
+
   function renderTargets() {
     const targetList = document.getElementById('target-list');
     if (!targetList) return;
@@ -445,6 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `</div>`;
         });
         html += `</div>`;
+        html += renderDamageRow(target);
 
         html += `</div>`; // .target-row
       });
@@ -481,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `</div>`;
         });
         html += `</div>`;
+        html += renderDamageRow(target);
 
         html += `</div>`; // .target-row
       });
