@@ -317,20 +317,22 @@ document.addEventListener('DOMContentLoaded', () => {
         `</div>`;
     }
 
-    const allBlocked = burst.bullets.length > 0 && burst.bullets.every(b => b.armor && !b.armor.penetrated);
-    const outerCls   = allBlocked ? 'shot hit blocked' : 'shot hit';
-    const outcome    = allBlocked ? 'BLOCKED' : 'HIT';
+    const allBlocked  = burst.bullets.length > 0 && burst.bullets.every(b => b.armor && !b.armor.penetrated);
+    const headerCls   = allBlocked ? 'shot hit blocked compact burst-hdr' : 'shot hit compact burst-hdr';
+    const bulletsCls  = allBlocked ? 'burst-bullets blocked' : 'burst-bullets hit';
+    const outcome     = allBlocked ? 'BLOCKED' : 'HIT';
+    const bulletCount = `${burst.bulletCount} bullet${burst.bulletCount !== 1 ? 's' : ''}`;
 
-    let html = `<div class="${outerCls}">`;
+    let html = `<div class="burst-group">`;
 
-    html += `<div class="shot-header">`;
+    html += `<div class="${headerCls}">`;
     html += `<span class="shot-num">BURST ${burst.num}</span>`;
     html += `<span class="shot-outcome">${outcome}</span>`;
-    html += `<span class="shot-bullet-count">${burst.bulletCount} bullet${burst.bulletCount !== 1 ? 's' : ''}</span>`;
-    html += `<span class="shot-roll-inline">${rollBreakdown} + ${params.skill} = ${burst.total} vs. ${params.difficulty}${critBadge}</span>`;
+    html += `<span class="shot-roll-compact">${rollBreakdown} + ${params.skill} = <strong>${burst.total}</strong> vs. ${params.difficulty}`;
+    html += ` <span class="shot-bullet-count">${bulletCount}</span>${critBadge}</span>`;
     html += `</div>`;
 
-    html += `<div class="shot-body">`;
+    html += `<div class="${bulletsCls}">`;
     burst.bullets.forEach((bullet, i) => {
       const bulletBlocked = bullet.armor && !bullet.armor.penetrated;
       html += `<div class="bullet-hit${bulletBlocked ? ' blocked' : ''}">`;
