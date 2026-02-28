@@ -371,9 +371,10 @@ button {
 }
 
 .bullet-hit {
-  display: flex;
+  display: grid;
+  grid-template-columns: 66px 68px 1fr 74px auto;
   align-items: center;
-  gap: 10px;
+  column-gap: 10px;
   color: var(--text);
   font-size: 11px;
   padding: 2px 0;
@@ -396,16 +397,13 @@ button {
 }
 
 .bullet-num {
+  grid-column: 1 / 4;
   color: var(--text-dim);
-  width: 58px;
-  flex-shrink: 0;
 }
 
 .bullet-location-compact {
   color: var(--text-hi);
   font-size: 11px;
-  width: 72px;
-  flex-shrink: 0;
   text-align: center;
 }
 
