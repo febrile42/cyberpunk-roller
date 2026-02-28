@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const runDmg = defaultDamage();
 
     function tally(shot) {
-      if (!shot.hit || !shot.location) return;
+      if (shot.hit === false || !shot.location) return;
       const key = LOCATION_KEY_MAP[shot.location];
       if (!key) return;
       if (shot.armor) {
