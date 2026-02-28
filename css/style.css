@@ -1,0 +1,711 @@
+/* ============================================================
+   CP2020 Combat Calculator
+   ============================================================ */
+
+:root {
+  --bg:           #090909;
+  --bg-panel:     #0e0e0e;
+  --bg-input:     #161616;
+  --border:       #1e1e1e;
+  --border-hi:    #2d2d2d;
+  --text:         #888;
+  --text-hi:      #ccc;
+  --text-dim:     #666;
+  --accent:       #c8a200;
+  --accent-hi:    #e8be00;
+  --hit-bg:       #071007;
+  --hit-fg:       #4aad52;
+  --hit-bd:       #183018;
+  --miss-bg:      #110606;
+  --miss-fg:      #c04545;
+  --miss-bd:      #381212;
+  --crit-fg:      #e07800;
+  --font:         'Courier New', Courier, monospace;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.6;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+
+.site-header {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-hi);
+  padding: 10px 20px;
+}
+
+.header-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.site-header h1 {
+  color: var(--accent-hi);
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.18em;
+}
+
+.header-sub {
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+/* ── Main three-column layout ───────────────────────────────── */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 290px 1fr 300px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Panels ─────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--bg-panel);
+  padding: 16px 18px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.panel:last-child {
+  border-right: none;
+}
+
+#targets-panel {
+  border-right: none;
+}
+
+.panel-title {
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+
+.empty-state {
+  color: var(--text-dim);
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ── Form — fire mode fieldset ──────────────────────────────── */
+
+#mode-fieldset {
+  border: 1px solid var(--border-hi);
+  padding: 8px 12px 10px;
+  margin-bottom: 14px;
+}
+
+#mode-fieldset legend {
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0 5px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.radio-label {
+  color: var(--text-hi);
+  font-size: 12px;
+}
+
+/* ── Form — fields ──────────────────────────────────────────── */
+
+.form-field {
+  margin-bottom: 11px;
+}
+
+.form-field label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.form-field input[type="number"],
+.form-field input[type="text"] {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hi);
+  color: var(--text-hi);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+
+.form-field input:focus {
+  border-color: var(--accent);
+}
+
+.field-hint {
+  display: block;
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+/* ── Form — buttons ─────────────────────────────────────────── */
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+button {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.18em;
+  padding: 9px 14px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+#fire-btn {
+  background: var(--accent);
+  border-color: var(--accent-hi);
+  color: #000;
+  flex: 1;
+}
+
+#fire-btn:hover:not(:disabled) {
+  background: var(--accent-hi);
+}
+
+#fire-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#clear-btn {
+  background: transparent;
+  border-color: var(--border-hi);
+  color: var(--text-dim);
+}
+
+#clear-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ── Results — summary bar ──────────────────────────────────── */
+
+.results-summary {
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tally-hits   { color: var(--hit-fg); }
+.tally-misses { color: var(--miss-fg); }
+
+.tally-total {
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: normal;
+}
+
+/* ── Results — error ────────────────────────────────────────── */
+
+.error-msg {
+  color: var(--miss-fg);
+  background: var(--miss-bg);
+  border: 1px solid var(--miss-bd);
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+/* ── Results — shot / burst cards ───────────────────────────── */
+
+.shot {
+  border: 1px solid;
+  margin-bottom: 7px;
+}
+
+.shot.hit {
+  background: var(--hit-bg);
+  border-color: var(--hit-bd);
+}
+
+.shot.miss {
+  background: var(--miss-bg);
+  border-color: var(--miss-bd);
+}
+
+.shot-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.14em;
+}
+
+.shot.hit  .shot-header { border-color: var(--hit-bd); }
+.shot.miss .shot-header { border-color: var(--miss-bd); }
+
+.shot-num     { color: var(--text-dim); }
+
+.shot-outcome { font-size: 11px; }
+.shot.hit  .shot-outcome { color: var(--hit-fg); }
+.shot.miss .shot-outcome { color: var(--miss-fg); }
+
+.shot-bullet-count {
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: normal;
+}
+
+.badge-crit {
+  background: var(--crit-fg);
+  color: #000;
+  font-size: 8px;
+  padding: 1px 5px;
+  letter-spacing: 0.12em;
+}
+
+.shot-body {
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.shot-roll {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.shot-roll strong {
+  color: var(--text-hi);
+  font-size: 13px;
+}
+
+.crit-arrow {
+  color: var(--crit-fg);
+}
+
+.shot-location {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.shot-location strong {
+  color: var(--text-hi);
+}
+
+.shot-damage {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.shot-damage strong {
+  color: var(--text-hi);
+  font-size: 14px;
+}
+
+.bullet-hit {
+  color: var(--text);
+  font-size: 11px;
+  padding: 2px 0 2px 8px;
+  border-left: 2px solid var(--hit-bd);
+  margin-top: 3px;
+}
+
+.bullet-hit strong {
+  color: var(--text-hi);
+}
+
+.bullet-hit.blocked {
+  border-left-color: rgba(200, 162, 0, 0.3);
+}
+
+.bullet-hit.blocked .bullet-num {
+  color: var(--accent);
+}
+
+.bullet-num {
+  color: var(--text-dim);
+}
+
+/* ── Armor result lines ──────────────────────────────────────── */
+
+.armor-detail {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.armor-blocked {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.passthrough {
+  color: var(--miss-fg);
+}
+
+.sp-zero {
+  color: var(--miss-fg);
+}
+
+/* ── Active target indicator (in attack panel) ───────────────── */
+
+.active-target-indicator {
+  margin-top: 10px;
+  font-size: 10px;
+  min-height: 16px;
+  color: var(--text-dim);
+}
+
+.tgt-name { color: var(--accent); }
+.tgt-dim  { color: var(--text-dim); font-style: italic; }
+
+/* ── Target panel — add form ─────────────────────────────────── */
+
+.add-target-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.add-target-form input[type="text"] {
+  flex: 1;
+  min-width: 130px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hi);
+  color: var(--text-hi);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 6px 10px;
+  outline: none;
+}
+
+.add-target-form input[type="text"]:focus {
+  border-color: var(--accent);
+}
+
+#add-target-type-fieldset {
+  border: none;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+}
+
+#add-target-btn {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 10px;
+}
+
+#add-target-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* ── Target panel — sections ─────────────────────────────────── */
+
+.target-section {
+  margin-bottom: 16px;
+}
+
+.target-section-title {
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sp-section-label {
+  color: var(--text-dim);
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Shared / per-target SP editor ──────────────────────────── */
+
+.shared-sp-row,
+.target-sp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 7px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.sp-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sp-field label {
+  color: var(--text-dim);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.sp-input {
+  width: 38px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  color: var(--text-hi);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 3px 4px;
+  text-align: center;
+  outline: none;
+}
+
+.sp-input:focus {
+  border-color: var(--accent);
+}
+
+/* ── Target rows ─────────────────────────────────────────────── */
+
+.target-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 3px;
+  background: var(--bg);
+}
+
+.target-row.has-sp {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+}
+
+.target-row.active-target {
+  border-color: var(--accent);
+  background: rgba(200, 162, 0, 0.03);
+}
+
+.target-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.target-row:not(.active-target) .target-row-header:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.target-name {
+  flex: 1;
+  color: var(--text-hi);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.target-badge {
+  font-size: 8px;
+  font-weight: bold;
+  padding: 1px 5px;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+
+.badge-generic {
+  color: var(--text-dim);
+  border: 1px solid var(--border-hi);
+}
+
+.badge-unique {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.btn-select {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 2px 5px;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.btn-select:hover { color: var(--text-hi); }
+
+.btn-select.is-active {
+  color: var(--accent-hi);
+}
+
+.btn-delete {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 2px 5px;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.btn-delete:hover {
+  color: var(--miss-fg);
+  border-color: var(--miss-bd);
+}
+
+/* ── Compact miss cards ──────────────────────────────────────── */
+
+.shot.compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  border: 1px solid;
+  margin-bottom: 4px;
+}
+
+.shot.miss.compact {
+  background: var(--miss-bg);
+  border-color: var(--miss-bd);
+}
+
+.shot-roll-compact {
+  color: var(--text-dim);
+  font-size: 10px;
+  flex: 1;
+}
+
+/* ── Blocked hit cards (hit but fully stopped by SP) ─────────── */
+
+.shot.hit.blocked {
+  background: rgba(200, 162, 0, 0.04);
+  border-color: rgba(200, 162, 0, 0.25);
+}
+
+.shot.hit.blocked .shot-header {
+  border-color: rgba(200, 162, 0, 0.2);
+}
+
+.shot.hit.blocked .shot-outcome {
+  color: var(--accent);
+}
+
+/* ── Generic batch-set label ─────────────────────────────────── */
+
+.batch-set-label {
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ── SP depleted indicator ───────────────────────────────────── */
+
+.sp-input.sp-input-zero {
+  color: var(--miss-fg);
+  border-color: rgba(192, 69, 69, 0.45);
+}
+
+/* ── Responsive: stack columns on narrow screens ─────────────── */
+
+@media (max-width: 860px) {
+  body {
+    overflow: auto;
+    grid-template-rows: auto;
+  }
+
+  .app-layout {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  #form-panel,
+  #results-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #targets-panel {
+    border-top: 1px solid var(--border);
+  }
+}
