@@ -281,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ? ' <span class="badge-crit">CRITICAL</span>'
       : '';
 
-    // Compact single-line card for misses
     if (!shot.hit) {
       return `<div class="shot miss compact">` +
         `<span class="shot-num">SHOT ${shot.num}</span>` +
@@ -290,25 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
         `</div>`;
     }
 
-    // Fully blocked by armor — amber tint, 'BLOCKED' outcome label
     const isBlocked = shot.armor && !shot.armor.penetrated;
-    const cls       = isBlocked ? 'shot hit blocked' : 'shot hit';
+    const cls       = isBlocked ? 'shot hit blocked compact' : 'shot hit compact';
     const outcome   = isBlocked ? 'BLOCKED' : 'HIT';
 
-    let html = `<div class="${cls}">`;
-
-    html += `<div class="shot-header">`;
-    html += `<span class="shot-num">SHOT ${shot.num}</span>`;
-    html += `<span class="shot-outcome">${outcome}</span>`;
-    html += critBadge;
-    html += `</div>`;
-
-    html += `<div class="shot-body">`;
-    html += `<div class="shot-roll">${rollBreakdown} + ${params.skill} = <strong>${shot.total}</strong> vs. ${params.difficulty}</div>`;
-    html += `<div class="shot-location">Location: <strong>${escapeHtml(shot.location)}</strong></div>`;
-    html += renderDamageLine(shot.rawDamage, shot.armor);
-    html += `</div></div>`;
-    return html;
+    return `<div class="${cls}">` +
+      `<span class="shot-num">SHOT ${shot.num}</span>` +
+      `<span class="shot-outcome">${outcome}</span>` +
+      `<span class="shot-roll-compact">${rollBreakdown} + ${params.skill} = <strong>${shot.total}</strong> vs. ${params.difficulty}${critBadge}</span>` +
+      `<span class="shot-location-compact">${escapeHtml(shot.location)}</span>` +
+      renderDamageCompact(shot.rawDamage, shot.armor) +
+      `</div>`;
   }
 
   function renderBurstCard(burst, params) {
@@ -335,46 +326,40 @@ document.addEventListener('DOMContentLoaded', () => {
     html += `<div class="shot-header">`;
     html += `<span class="shot-num">BURST ${burst.num}</span>`;
     html += `<span class="shot-outcome">${outcome}</span>`;
-    html += ` <span class="shot-bullet-count">${burst.bulletCount} bullet${burst.bulletCount !== 1 ? 's' : ''}</span>`;
-    html += critBadge;
+    html += `<span class="shot-bullet-count">${burst.bulletCount} bullet${burst.bulletCount !== 1 ? 's' : ''}</span>`;
+    html += `<span class="shot-roll-inline">${rollBreakdown} + ${params.skill} = ${burst.total} vs. ${params.difficulty}${critBadge}</span>`;
     html += `</div>`;
 
     html += `<div class="shot-body">`;
-    html += `<div class="shot-roll">${rollBreakdown} + ${params.skill} = <strong>${burst.total}</strong> vs. ${params.difficulty}</div>`;
-
     burst.bullets.forEach((bullet, i) => {
       const bulletBlocked = bullet.armor && !bullet.armor.penetrated;
       html += `<div class="bullet-hit${bulletBlocked ? ' blocked' : ''}">`;
       html += `<span class="bullet-num">&#x2022; Bullet ${i + 1}</span>`;
-      html += ` &mdash; Location: <strong>${escapeHtml(bullet.location)}</strong>`;
-      html += ` &nbsp; `;
-      html += renderDamageLine(bullet.rawDamage, bullet.armor);
+      html += `<span class="bullet-location-compact">${escapeHtml(bullet.location)}</span>`;
+      html += renderDamageCompact(bullet.rawDamage, bullet.armor);
       html += `</div>`;
     });
-
     html += `</div></div>`;
     return html;
   }
 
-  // Renders the damage line for a single hit (shared between shot cards and bullet entries).
-  function renderDamageLine(rawDamage, armor) {
+  // Renders the damage detail as an inline span (used in compact shot and bullet rows).
+  function renderDamageCompact(rawDamage, armor) {
     if (!armor) {
-      return `<div class="shot-damage">Damage: <strong>${rawDamage}</strong></div>`;
+      return `<span class="shot-damage-compact">Dmg: <strong>${rawDamage}</strong></span>`;
     }
 
     if (!armor.penetrated) {
-      return `<div class="shot-damage">` +
-        `Damage: <strong>${rawDamage}</strong> ` +
-        `<span class="armor-blocked">&mdash; blocked (SP ${armor.spBefore})</span>` +
-        `</div>`;
+      return `<span class="shot-damage-compact">` +
+        `Dmg: <strong>${rawDamage}</strong> ` +
+        `<span class="armor-blocked">blocked (SP ${armor.spBefore})</span>` +
+        `</span>`;
     }
 
-    return `<div class="shot-damage">` +
-      `Damage: <strong>${rawDamage}</strong> ` +
-      `<span class="armor-detail">&mdash; <strong class="passthrough">${armor.passthrough}</strong> through &nbsp;` +
-      `(SP: ${armor.spBefore}&thinsp;&#x2192;&thinsp;<span class="${armor.spAfter === 0 ? 'sp-zero' : ''}">${armor.spAfter}</span>)` +
-      `</span>` +
-      `</div>`;
+    return `<span class="shot-damage-compact">` +
+      `Dmg: <strong>${rawDamage}</strong> &rarr; <strong class="passthrough">${armor.passthrough}</strong> through ` +
+      `<span class="armor-detail">(SP: ${armor.spBefore}&thinsp;&#x2192;&thinsp;<span class="${armor.spAfter === 0 ? 'sp-zero' : ''}">${armor.spAfter}</span>)</span>` +
+      `</span>`;
   }
 
   // Build the roll part of the breakdown string.

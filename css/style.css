@@ -88,7 +88,7 @@ body {
 
 .app-layout {
   display: grid;
-  grid-template-columns: 290px 1fr 300px;
+  grid-template-columns: 290px 1fr 320px;
   min-height: 0;
   overflow: hidden;
 }
@@ -371,11 +371,16 @@ button {
 }
 
 .bullet-hit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--text);
   font-size: 11px;
-  padding: 2px 0 2px 8px;
-  border-left: 2px solid var(--hit-bd);
-  margin-top: 3px;
+  padding: 2px 0;
+}
+
+.bullet-hit + .bullet-hit {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .bullet-hit strong {
@@ -383,7 +388,7 @@ button {
 }
 
 .bullet-hit.blocked {
-  border-left-color: rgba(200, 162, 0, 0.3);
+  background: rgba(200, 162, 0, 0.06);
 }
 
 .bullet-hit.blocked .bullet-num {
@@ -392,6 +397,24 @@ button {
 
 .bullet-num {
   color: var(--text-dim);
+  width: 58px;
+  flex-shrink: 0;
+}
+
+.bullet-location-compact {
+  color: var(--text-hi);
+  font-size: 11px;
+  width: 72px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.shot-roll-inline {
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: normal;
+  letter-spacing: 0;
+  margin-left: auto;
 }
 
 /* ── Armor result lines ──────────────────────────────────────── */
@@ -632,13 +655,14 @@ button {
   border-color: var(--miss-bd);
 }
 
-/* ── Compact miss cards ──────────────────────────────────────── */
+/* ── Compact shot cards (all shots use this layout) ─────────── */
 
 .shot.compact {
-  display: flex;
+  display: grid;
+  grid-template-columns: 66px 68px 1fr 74px auto;
   align-items: center;
-  gap: 10px;
-  padding: 4px 10px;
+  column-gap: 10px;
+  padding: 5px 10px;
   border: 1px solid;
   margin-bottom: 4px;
 }
@@ -649,9 +673,33 @@ button {
 }
 
 .shot-roll-compact {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.shot-roll-compact strong {
+  color: var(--text-hi);
+}
+
+.shot.miss.compact .shot-roll-compact {
+  grid-column: 3 / -1;
   color: var(--text-dim);
   font-size: 10px;
-  flex: 1;
+}
+
+.shot-location-compact {
+  color: var(--text-hi);
+  font-size: 11px;
+  text-align: center;
+}
+
+.shot-damage-compact {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.shot-damage-compact strong {
+  color: var(--text-hi);
 }
 
 /* ── Blocked hit cards (hit but fully stopped by SP) ─────────── */
