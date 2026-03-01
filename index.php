@@ -76,11 +76,10 @@
       </form>
     </section>
 
-    <section id="results-panel" class="panel" aria-label="Combat Results" aria-live="polite">
-      <h2 class="panel-title">RESULTS</h2>
-      <div id="results-summary" class="results-summary" hidden></div>
-      <div id="results-content">
-        <p class="empty-state">Fire to see results.</p>
+    <section id="results-panel" class="panel" aria-label="Fire Log" aria-live="polite">
+      <h2 class="panel-title">FIRE LOG <span class="panel-title-sub">// last 15 min · live</span></h2>
+      <div id="fire-log">
+        <p class="empty-state">No fire events in the last 15 minutes.</p>
       </div>
     </section>
 

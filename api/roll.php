@@ -62,6 +62,8 @@ $params = [
     'damage'     => $damage,
 ];
 
+// ── Build $response per mode, then save + echo once ─────────────────────────
+
 switch ($mode) {
     case 'single':
         $workingSP = $armorSP;
@@ -82,7 +84,6 @@ switch ($mode) {
             'misses' => 1 - $hits,
         ];
         if ($workingSP !== null) $response['finalSP'] = $workingSP;
-        echo json_encode($response);
         break;
 
     case 'auto':
@@ -118,7 +119,6 @@ switch ($mode) {
             'misses' => $shotCount - $hits,
         ];
         if ($workingSP !== null) $response['finalSP'] = $workingSP;
-        echo json_encode($response);
         break;
 
     case 'burst':
@@ -174,7 +174,6 @@ switch ($mode) {
             'totalBullets' => $totalBullets,
         ];
         if ($workingSP !== null) $response['finalSP'] = $workingSP;
-        echo json_encode($response);
         break;
 
     default:
@@ -183,9 +182,21 @@ switch ($mode) {
         exit;
 }
 
+// Persist the event to the shared fire log.
+// Wrapped in try/catch so a missing or misconfigured DB never breaks the fire button.
+try {
+    require_once __DIR__ . '/../src/db.php';
+    $response['eventId'] = saveFireEvent($response);
+} catch (Throwable $_) {
+    $response['eventId'] = null;
+}
+
+echo json_encode($response);
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
 /**
  * Format a processShot() result for the JSON response.
- * rawDamage is the roll total before armor. armor is null when no SP was tracked.
  */
 function formatShot(array $shot, int $num, ?array $armorInfo = null): array
 {
@@ -201,8 +212,7 @@ function formatShot(array $shot, int $num, ?array $armorInfo = null): array
 }
 
 /**
- * Apply armor to a single bullet hit, mutating $workingSP in place.
- * Returns the armor interaction details.
+ * Apply armor to a single bullet/shot hit, mutating $workingSP in place.
  */
 function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP): ?array
 {
@@ -218,4 +228,38 @@ function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP): 
         'spAfter'     => $result['newSP'],
         'penetrated'  => $result['penetrated'],
     ];
+}
+
+/**
+ * INSERT a fire event into the shared log and return its new ID.
+ * Old events (> 15 min) are pruned on each insert.
+ */
+function saveFireEvent(array $r): int
+{
+    $db   = getDB();
+    $mode = $r['mode'];
+
+    $totalShots   = $mode === 'burst' ? ($r['params']['bursts'] ?? 1) : ($r['params']['shots'] ?? 1);
+    $totalBullets = $r['totalBullets'] ?? 0;
+    $results      = json_encode($mode === 'burst' ? ($r['bursts'] ?? []) : ($r['shots'] ?? []));
+
+    $stmt = $db->prepare(
+        'INSERT INTO fire_events
+            (mode, params_json, hits, misses, total_shots, total_bullets, results_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
+    $stmt->execute([
+        $mode,
+        json_encode($r['params']),
+        (int)$r['hits'],
+        (int)$r['misses'],
+        (int)$totalShots,
+        (int)$totalBullets,
+        $results,
+    ]);
+
+    // Prune events older than 15 minutes to keep the table tidy
+    $db->exec("DELETE FROM fire_events WHERE fired_at < NOW() - INTERVAL 15 MINUTE");
+
+    return (int)$db->lastInsertId();
 }

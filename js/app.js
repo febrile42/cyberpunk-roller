@@ -31,8 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const clearBtn    = document.getElementById('clear-btn');
   const fieldShots  = document.getElementById('field-shots');
   const fieldBursts = document.getElementById('field-bursts');
-  const summary     = document.getElementById('results-summary');
-  const content     = document.getElementById('results-content');
+  const fireLog     = document.getElementById('fire-log');
+
+  // ── Fire log state ───────────────────────────────────────────────────────
+  let _logEvents   = [];          // last poll result, used for re-render on toggle
+  let _expandedIds = new Set();   // event IDs currently expanded
 
   // ── localStorage state ───────────────────────────────────────────────────
 
@@ -205,12 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ── Clear button ─────────────────────────────────────────────────────────
+  // ── Clear button — collapse all expanded rows ─────────────────────────────
 
   clearBtn.addEventListener('click', () => {
-    summary.hidden    = true;
-    summary.innerHTML = '';
-    content.innerHTML = '<p class="empty-state">Fire to see results.</p>';
+    _expandedIds.clear();
+    renderFireLog(_logEvents);
   });
 
   // ── Add-target form ──────────────────────────────────────────────────────
@@ -284,7 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeId = loadState().activeTargetId;
       if (activeId) updateActiveDamage(computeRunDamage(data));
 
-      renderResults(data);
+      // Auto-expand the event just fired and immediately refresh the log
+      if (data.eventId) _expandedIds.add(data.eventId);
+      fetchFireLog(true);
 
     } catch (err) {
       renderError('Could not reach the server. Is PHP running? (php -S localhost:8000)');
@@ -294,45 +298,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Render results ───────────────────────────────────────────────────────
+  // ── Fire log — polling & rendering ──────────────────────────────────────
 
-  function renderResults(data) {
-    const { mode, params, hits, misses } = data;
-    const total = hits + misses;
+  const POLL_MS = 3000;
 
-    summary.hidden = false;
-
-    if (mode === 'burst') {
-      const bulletNote = data.totalBullets > 0
-        ? `&ensp;<span class="tally-total">${data.totalBullets} bullet${data.totalBullets !== 1 ? 's' : ''} landed</span>`
-        : '';
-      summary.innerHTML =
-        `<span class="tally-hits">${hits}&nbsp;BURST${hits !== 1 ? 'S' : ''}&nbsp;HIT</span>` +
-        `&ensp;/&ensp;` +
-        `<span class="tally-misses">${misses}&nbsp;MISS${misses !== 1 ? 'ES' : ''}</span>` +
-        `&ensp;<span class="tally-total">(${total} burst${total !== 1 ? 's' : ''})</span>` +
-        bulletNote;
-    } else {
-      summary.innerHTML =
-        `<span class="tally-hits">${hits}&nbsp;HIT${hits !== 1 ? 'S' : ''}</span>` +
-        `&ensp;/&ensp;` +
-        `<span class="tally-misses">${misses}&nbsp;MISS${misses !== 1 ? 'ES' : ''}</span>` +
-        `&ensp;<span class="tally-total">(${total} shot${total !== 1 ? 's' : ''})</span>`;
-    }
-
-    let html = '';
-    if (mode === 'single' || mode === 'auto') {
-      data.shots.forEach(shot => { html += renderShotCard(shot, params); });
-    } else if (mode === 'burst') {
-      data.bursts.forEach(burst => { html += renderBurstCard(burst, params); });
-    }
-
-    content.innerHTML = html || '<p class="empty-state">No shots to display.</p>';
-
-    // Scroll the results panel back to the top so new results are immediately visible
-    const resultsPanel = document.getElementById('results-panel');
-    if (resultsPanel) resultsPanel.scrollTop = 0;
+  // Returns a human-readable relative time string for a UTC ISO timestamp.
+  function relativeTime(firedAt) {
+    const diff = Math.floor((Date.now() - new Date(firedAt)) / 1000);
+    if (diff < 10)   return 'just now';
+    if (diff < 60)   return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    return `${Math.floor(diff / 3600)}h ago`;
   }
+
+  // Builds the tally portion of a log row header.
+  function buildLogTally(ev) {
+    if (ev.mode === 'burst') {
+      const bulletNote = ev.total_bullets > 0
+        ? `&ensp;<span class="tally-total">${ev.total_bullets} bullet${ev.total_bullets !== 1 ? 's' : ''} landed</span>`
+        : '';
+      return `<span class="tally-hits">${ev.hits}&nbsp;BURST${ev.hits !== 1 ? 'S' : ''}&nbsp;HIT</span>` +
+             `&ensp;/&ensp;` +
+             `<span class="tally-misses">${ev.misses}&nbsp;MISS${ev.misses !== 1 ? 'ES' : ''}</span>` +
+             `&ensp;<span class="tally-total">(${ev.total_shots} burst${ev.total_shots !== 1 ? 's' : ''})</span>` +
+             bulletNote;
+    }
+    return `<span class="tally-hits">${ev.hits}&nbsp;HIT${ev.hits !== 1 ? 'S' : ''}</span>` +
+           `&ensp;/&ensp;` +
+           `<span class="tally-misses">${ev.misses}&nbsp;MISS${ev.misses !== 1 ? 'ES' : ''}</span>` +
+           `&ensp;<span class="tally-total">(${ev.total_shots} shot${ev.total_shots !== 1 ? 's' : ''})</span>`;
+  }
+
+  // Renders the full list of fire events into #fire-log.
+  function renderFireLog(events) {
+    if (!events || events.length === 0) {
+      fireLog.innerHTML = '<p class="empty-state">No fire events in the last 15 minutes.</p>';
+      return;
+    }
+
+    const modeLabel = { single: 'SINGLE', auto: 'AUTO', burst: 'BURST' };
+    let html = '';
+
+    events.forEach(ev => {
+      const expanded = _expandedIds.has(ev.id);
+      const toggle   = expanded ? '&#x25BC;' : '&#x25B6;';
+      const p        = ev.params;
+      const params   = `${escapeHtml(p.damage)} · sk:${p.skill} dif:${p.difficulty}`;
+
+      html += `<div class="log-event">`;
+      html += `<div class="log-row${expanded ? ' expanded' : ''}" data-id="${ev.id}">`;
+      html += `<span class="log-toggle">${toggle}</span>`;
+      html += `<span class="log-mode">${modeLabel[ev.mode] || ev.mode.toUpperCase()}</span>`;
+      html += `<span class="log-tally">${buildLogTally(ev)}</span>`;
+      html += `<span class="log-params">${params}</span>`;
+      html += `<span class="log-time">${relativeTime(ev.fired_at)}</span>`;
+      html += `</div>`;
+
+      if (expanded) {
+        html += `<div class="log-detail">`;
+        if (ev.mode === 'single' || ev.mode === 'auto') {
+          (ev.shots || []).forEach(shot => { html += renderShotCard(shot, p); });
+        } else if (ev.mode === 'burst') {
+          (ev.bursts || []).forEach(burst => { html += renderBurstCard(burst, p); });
+        }
+        html += `</div>`;
+      }
+
+      html += `</div>`; // .log-event
+    });
+
+    fireLog.innerHTML = html;
+    attachLogListeners();
+  }
+
+  // Wires click-to-expand on each log row (called after every renderFireLog).
+  function attachLogListeners() {
+    fireLog.querySelectorAll('.log-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = parseInt(row.dataset.id, 10);
+        if (_expandedIds.has(id)) {
+          _expandedIds.delete(id);
+        } else {
+          _expandedIds.add(id);
+        }
+        renderFireLog(_logEvents);
+      });
+    });
+  }
+
+  // Fetches the last 15 minutes of fire events from the server and re-renders.
+  // Pass scrollToTop=true after firing to jump to the newest entry.
+  async function fetchFireLog(scrollToTop = false) {
+    try {
+      const res  = await fetch('api/events.php');
+      _logEvents = await res.json();
+      renderFireLog(_logEvents);
+      if (scrollToTop) {
+        const panel = document.getElementById('results-panel');
+        if (panel) panel.scrollTop = 0;
+      }
+    } catch {
+      /* Silent — poll errors don't disrupt the UI */
+    }
+  }
+
+  setInterval(fetchFireLog, POLL_MS);
 
   function renderShotCard(shot, params) {
     const rollBreakdown = buildRollBreakdown(shot.skillRoll);
@@ -437,9 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Error display ────────────────────────────────────────────────────────
 
   function renderError(msg) {
-    summary.hidden    = true;
-    summary.innerHTML = '';
-    content.innerHTML = `<div class="error-msg">${escapeHtml(msg)}</div>`;
+    fireLog.innerHTML = `<div class="error-msg">${escapeHtml(msg)}</div>`;
   }
 
   // ── Target panel rendering ───────────────────────────────────────────────
@@ -640,4 +708,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateFireBtnText();
   renderTargets();
+  fetchFireLog();
 });
