@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../src/dice.php';
 require_once __DIR__ . '/../src/combat.php';
 require_once __DIR__ . '/../src/armor.php';
+require_once __DIR__ . '/../src/fire_log.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -193,73 +194,5 @@ try {
 
 echo json_encode($response);
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * Format a processShot() result for the JSON response.
- */
-function formatShot(array $shot, int $num, ?array $armorInfo = null): array
-{
-    return [
-        'num'       => $num,
-        'hit'       => $shot['hit'],
-        'skillRoll' => $shot['skillRoll'],
-        'total'     => $shot['total'],
-        'location'  => $shot['hit'] ? $shot['location']['location'] : null,
-        'rawDamage' => $shot['hit'] ? $shot['damage']['total']      : null,
-        'armor'     => $armorInfo,
-    ];
-}
-
-/**
- * Apply armor to a single bullet/shot hit, mutating $workingSP in place.
- */
-function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP): ?array
-{
-    if ($workingSP === null) return null;
-    $locKey             = locationKey($location);
-    $locSP              = (int)($workingSP[$locKey] ?? 0);
-    $result             = applyDamage($rawDamage, $locSP);
-    $workingSP[$locKey] = $result['newSP'];
-
-    return [
-        'spBefore'    => $locSP,
-        'passthrough' => $result['passthrough'],
-        'spAfter'     => $result['newSP'],
-        'penetrated'  => $result['penetrated'],
-    ];
-}
-
-/**
- * INSERT a fire event into the shared log and return its new ID.
- * Old events (> 15 min) are pruned on each insert.
- */
-function saveFireEvent(array $r): int
-{
-    $db   = getDB();
-    $mode = $r['mode'];
-
-    $totalShots   = $mode === 'burst' ? ($r['params']['bursts'] ?? 1) : ($r['params']['shots'] ?? 1);
-    $totalBullets = $r['totalBullets'] ?? 0;
-    $results      = json_encode($mode === 'burst' ? ($r['bursts'] ?? []) : ($r['shots'] ?? []));
-
-    $stmt = $db->prepare(
-        'INSERT INTO fire_events
-            (mode, params_json, hits, misses, total_shots, total_bullets, results_json)
-         VALUES (?, ?, ?, ?, ?, ?, ?)'
-    );
-    $stmt->execute([
-        $mode,
-        json_encode($r['params']),
-        (int)$r['hits'],
-        (int)$r['misses'],
-        (int)$totalShots,
-        (int)$totalBullets,
-        $results,
-    ]);
-
-    // Prune events older than 15 minutes to keep the table tidy
-    $db->exec("DELETE FROM fire_events WHERE fired_at < NOW() - INTERVAL 15 MINUTE");
-
-    return (int)$db->lastInsertId();
-}
+// Helper functions formatShot(), applyArmorToHit(), and saveFireEvent()
+// are defined in src/combat.php, src/armor.php, and src/fire_log.php respectively.

@@ -75,3 +75,32 @@ function defaultSP(int $value = 0): array
         'leftLeg'  => $value,
     ];
 }
+
+/**
+ * Apply armor to a single bullet/shot hit, mutating $workingSP in place.
+ *
+ * @param string   $location   Location name, e.g. "Torso"
+ * @param int      $rawDamage  Damage value before armor
+ * @param array   &$workingSP  Current SP array; mutated on penetration
+ * @return array {
+ *   spBefore:    int   SP before this hit
+ *   passthrough: int   Damage that passed through armor
+ *   spAfter:     int   SP after this hit
+ *   penetrated:  bool  Whether armor was penetrated
+ * }
+ */
+function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP): ?array
+{
+    if ($workingSP === null) return null;
+    $locKey             = locationKey($location);
+    $locSP              = (int)($workingSP[$locKey] ?? 0);
+    $result             = applyDamage($rawDamage, $locSP);
+    $workingSP[$locKey] = $result['newSP'];
+
+    return [
+        'spBefore'    => $locSP,
+        'passthrough' => $result['passthrough'],
+        'spAfter'     => $result['newSP'],
+        'penetrated'  => $result['penetrated'],
+    ];
+}

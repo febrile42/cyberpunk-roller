@@ -302,13 +302,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const POLL_MS = 3000;
 
-  // Returns a human-readable relative time string for a UTC ISO timestamp.
-  function relativeTime(firedAt) {
-    const diff = Math.floor((Date.now() - new Date(firedAt)) / 1000);
-    if (diff < 10)   return 'just now';
-    if (diff < 60)   return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    return `${Math.floor(diff / 3600)}h ago`;
+  // Extracts HH:MM:SS from an ISO timestamp string (e.g. "2026-03-02T14:30:45Z").
+  // Slices the string directly to avoid timezone misinterpretation.
+  function firedAtTime(firedAt) {
+    const t = firedAt.indexOf('T');
+    return t !== -1 ? firedAt.slice(t + 1, t + 9) : firedAt;
   }
 
   // Builds the tally portion of a log row header.
@@ -351,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `<span class="log-mode">${modeLabel[ev.mode] || ev.mode.toUpperCase()}</span>`;
       html += `<span class="log-tally">${buildLogTally(ev)}</span>`;
       html += `<span class="log-params">${params}</span>`;
-      html += `<span class="log-time">${relativeTime(ev.fired_at)}</span>`;
+      html += `<span class="log-time">${firedAtTime(ev.fired_at)}</span>`;
       html += `</div>`;
 
       if (expanded) {

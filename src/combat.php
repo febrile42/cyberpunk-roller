@@ -123,3 +123,23 @@ function processBurst(
         'hits'        => $hits,
     ];
 }
+
+/**
+ * Format a processShot() result for the JSON response.
+ *
+ * @param array      $shot      Return value of processShot()
+ * @param int        $num       Shot sequence number (1-based)
+ * @param array|null $armorInfo Return value of applyArmorToHit(), or null
+ */
+function formatShot(array $shot, int $num, ?array $armorInfo = null): array
+{
+    return [
+        'num'       => $num,
+        'hit'       => $shot['hit'],
+        'skillRoll' => $shot['skillRoll'],
+        'total'     => $shot['total'],
+        'location'  => $shot['hit'] ? $shot['location']['location'] : null,
+        'rawDamage' => $shot['hit'] ? $shot['damage']['total']      : null,
+        'armor'     => $armorInfo,
+    ];
+}
