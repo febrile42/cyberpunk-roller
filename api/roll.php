@@ -25,6 +25,7 @@ $mode       = trim((string)($input['mode'] ?? ''));
 $skill      = array_key_exists('skill', $input)      ? (int)$input['skill']      : null;
 $difficulty = array_key_exists('difficulty', $input) ? (int)$input['difficulty'] : null;
 $damage     = trim((string)($input['damage'] ?? ''));
+$targetName = isset($input['targetName']) ? trim((string)$input['targetName']) : null;
 
 $missing = [];
 if ($mode === '')         $missing[] = 'mode';
@@ -62,6 +63,9 @@ $params = [
     'difficulty' => $difficulty,
     'damage'     => $damage,
 ];
+if ($targetName !== null && $targetName !== '') {
+    $params['targetName'] = $targetName;
+}
 
 // ── Build $response per mode, then save + echo once ─────────────────────────
 

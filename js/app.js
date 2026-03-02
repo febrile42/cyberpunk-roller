@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Fire log state ───────────────────────────────────────────────────────
   let _logEvents   = [];          // last poll result, used for re-render on toggle
   let _expandedIds = new Set();   // event IDs currently expanded
+  let _initialLoad = true;        // auto-expand newest event on first fetch
 
   // ── localStorage state ───────────────────────────────────────────────────
 
@@ -258,9 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
       payload.bursts = bursts;
     }
 
-    // Include active target's current SP if one is selected
+    // Include active target's current SP and name if one is selected
     const activeSP = getActiveTargetSP();
     if (activeSP !== null) payload.armorSP = activeSP;
+    const _state    = loadState();
+    const _activeTgt = _state.targets.find(t => t.id === _state.activeTargetId);
+    if (_activeTgt) payload.targetName = _activeTgt.name;
 
     fireBtn.disabled    = true;
     fireBtn.textContent = 'FIRING...';
@@ -341,7 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const expanded = _expandedIds.has(ev.id);
       const toggle   = expanded ? '&#x25BC;' : '&#x25B6;';
       const p        = ev.params;
-      const params   = `${escapeHtml(p.damage)} · sk:${p.skill} dif:${p.difficulty}`;
+      const tgt      = p.targetName ? ` · ${escapeHtml(p.targetName)}` : '';
+      const params   = `${escapeHtml(p.damage)} · sk:${p.skill} dif:${p.difficulty}${tgt}`;
 
       html += `<div class="log-event">`;
       html += `<div class="log-row${expanded ? ' expanded' : ''}" data-id="${ev.id}">`;
@@ -390,6 +395,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res  = await fetch('api/events.php');
       _logEvents = await res.json();
+      if (_initialLoad) {
+        _initialLoad = false;
+        if (_logEvents.length > 0 && _expandedIds.size === 0) {
+          _expandedIds.add(_logEvents[0].id);
+        }
+      }
       renderFireLog(_logEvents);
       if (scrollToTop) {
         const panel = document.getElementById('results-panel');
