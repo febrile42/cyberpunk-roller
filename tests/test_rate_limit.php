@@ -67,14 +67,18 @@ $ip2     = '198.51.100.' . mt_rand(1, 254);  // TEST-NET-2 block
 $key2    = 'rl:' . $ip2;
 $sentinel = 'NO_EXIT';
 
-$code = implode(';', [
-    'require ' . var_export($srcPath, true),
-    'apcu_store(' . var_export($key2, true) . ', 5, 10)',
-    'enforceRateLimit(' . var_export($ip2, true) . ', 5, 10)',
-    'echo ' . var_export($sentinel, true),
-]);
+// Write to a temp file to avoid shell-escaping issues with -r and single-quoted strings.
+$tmpFile = tempnam(sys_get_temp_dir(), 'rl_test_') . '.php';
+file_put_contents($tmpFile, implode("\n", [
+    '<?php',
+    'require ' . var_export($srcPath, true) . ';',
+    'apcu_store(' . var_export($key2, true) . ', 5, 10);',
+    'enforceRateLimit(' . var_export($ip2, true) . ', 5, 10);',
+    'echo ' . var_export($sentinel, true) . ';',
+]));
 
-$raw = (string)shell_exec('php -d apc.enable_cli=1 -r ' . escapeshellarg($code) . ' 2>/dev/null');
+$raw = (string)shell_exec('php -d apc.enable_cli=1 ' . escapeshellarg($tmpFile) . ' 2>/dev/null');
+unlink($tmpFile);
 $decoded = json_decode($raw, true);
 
 assert_equal(
