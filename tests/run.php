@@ -53,6 +53,7 @@ $testFiles = [
     'test_armor.php',
     'test_roll_helpers.php',
     'test_fire_log.php',
+    'test_rate_limit.php',
 ];
 
 foreach ($testFiles as $file) {
