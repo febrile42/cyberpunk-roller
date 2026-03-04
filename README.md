@@ -1,4 +1,4 @@
-# dice2 — Cyberpunk 2020 Combat Calculator
+# cyberpunk-roller — Cyberpunk 2020 Combat Calculator
 
 A browser-based PHP web app for automating combat calculations in the **Cyberpunk 2020** tabletop RPG.
 
@@ -11,16 +11,36 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 - Tracks armor **Stopping Power (SP)** per location across multiple targets
 - Degrades armor SP permanently on each penetrating hit
 
-## Running the App
+## Hosting
 
-No installation required beyond PHP.
+### Docker (recommended)
 
 ```bash
-cd dice2
+cp .env.example .env     # set DB_PASS and DB_ROOT_PASS
+docker compose up --build -d
+```
+
+App available at `http://localhost:8080`. MariaDB and the schema are initialized automatically on first run. Data persists in a named Docker volume (`db_data`).
+
+### Native (Apache / Nginx / PHP built-in server)
+
+Requirements: PHP 8.0+, `pdo_mysql` extension, optionally `apcu`.
+
+**Quick start (no database, no fire log):**
+
+```bash
+cd cyberpunk-roller
 php -S localhost:8000
 ```
 
-Then open `http://localhost:8000` in your browser.
+Open `http://localhost:8000`. Roll results work immediately — the fire log requires a database.
+
+**With MariaDB fire log:**
+
+1. Import the schema: `mariadb -u root -p < db/schema.sql`
+2. Edit the credentials at the top of `src/db.php`
+3. Point your web server's document root at the project directory with `AllowOverride All` (Apache) or equivalent (Nginx)
+4. Reload your server
 
 ## Game Rules Summary
 
