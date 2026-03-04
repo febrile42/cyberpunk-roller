@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
 /**
  * Tests for applyArmorToHit() (src/armor.php) and formatShot() (src/combat.php).

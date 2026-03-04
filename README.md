@@ -13,41 +13,33 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 
 ## Hosting
 
-### Docker (recommended)
+### Docker
 
 ```bash
 docker compose up -d
 ```
 
-App available at `http://localhost:8080`. MariaDB and the schema are initialized automatically on first run. Default credentials are baked into `compose.yaml`; the DB port is not exposed externally. Override by setting `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
+App available at `http://localhost:8080`. MariaDB and the schema initialize automatically on first run. Default credentials are in `compose.yaml`; override with `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
 
-**Updating the app** (rebuilds the app image, DB data intact):
+To rebuild after updating files:
 
 ```bash
 docker compose down && docker compose up --build -d
 ```
 
-**Data safety:** fire log data lives in a named Docker volume (`db_data`) and survives container restarts and rebuilds. Only `docker compose down -v` deletes it — avoid unless you intend to wipe all data.
-
 ### Native (Apache / Nginx / PHP built-in server)
 
-Requirements: PHP 8.0+, `pdo_mysql` extension, optionally `apcu`.
-
-**Quick start (no database, no fire log):**
+Requirements: PHP 8.0+, `pdo_mysql` extension. The `apcu` extension is optional — when present it enables per-IP rate limiting on the roll API.
 
 ```bash
-cd cyberpunk-roller
 php -S localhost:8000
 ```
 
-Open `http://localhost:8000`. Roll results work immediately — the fire log requires a database.
-
-**With MariaDB fire log:**
+Open `http://localhost:8000`. Roll results work without a database — the fire log requires MariaDB:
 
 1. Import the schema: `mariadb -u root -p < db/schema.sql`
-2. Edit the credentials at the top of `src/db.php`
-3. Point your web server's document root at the project directory with `AllowOverride All` (Apache) or equivalent (Nginx)
-4. Reload your server
+2. Edit credentials at the top of `src/db.php`
+3. Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent
 
 ## Game Rules Summary
 
@@ -80,4 +72,5 @@ Open `http://localhost:8000`. Roll results work immediately — the fire log req
 - Targets can be generic (shared SP values) or unique (individually configured)
 
 ## Storage
+
 Armor and target state is saved in browser **localStorage** — no server-side database required.

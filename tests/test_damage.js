@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 /**
  * Tests for computeRunDamage() — inlined from js/app.js.
  * Run with: node tests/test_damage.js

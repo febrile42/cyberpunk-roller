@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
 require_once __DIR__ . '/../src/armor.php';
 

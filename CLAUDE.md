@@ -1,4 +1,4 @@
-# CLAUDE.md — dice2 Project Conventions
+# CLAUDE.md — cyberpunk-roller Project Conventions
 
 ## Project Overview
 A PHP web app for automating Cyberpunk 2020 TTRPG combat calculations: to-hit rolls, damage, hit location, and armor tracking.
@@ -6,30 +6,44 @@ A PHP web app for automating Cyberpunk 2020 TTRPG combat calculations: to-hit ro
 ## Tech Stack
 - **Language:** PHP (server-side logic)
 - **Frontend:** Standard HTML/CSS/JavaScript (no frameworks)
-- **Storage:** Browser localStorage (no database, no Docker, no CI/CD)
-- **Server:** Any standard PHP-capable web server (e.g., `php -S localhost:8000`)
+- **Storage:** Browser localStorage for armor/target state; MariaDB for fire log persistence (optional — app works without a database)
+- **Infrastructure:** Docker + Docker Compose (optional); any PHP-capable web server works natively
 
 ## File Structure
 ```
-dice2/
-├── CLAUDE.md           # This file
-├── README.md           # Project overview and usage
-├── index.php           # Main entry point / UI
+cyberpunk-roller/
+├── CLAUDE.md               # This file
+├── README.md               # Project overview and usage
+├── LICENSE                 # PolyForm Noncommercial 1.0.0
+├── Dockerfile              # PHP 8.2 Apache image
+├── compose.yaml            # Docker Compose: app + MariaDB
+├── .htaccess               # Apache: directory listing off, blocks /src /tests /db
+├── index.php               # Main entry point / UI
 ├── api/
-│   └── roll.php        # JSON API endpoint (POST, returns combat results)
+│   ├── roll.php            # JSON API endpoint: POST combat params → results
+│   └── events.php          # JSON API: GET recent fire events from DB
 ├── src/
-│   ├── dice.php        # rollDice(), skillCheck(), rollLocation()
-│   ├── combat.php      # evaluateHit(), processShot(), processBurst()
-│   └── armor.php       # applyDamage(), locationKey(), defaultSP()
+│   ├── dice.php            # rollDice(), skillCheck(), rollLocation()
+│   ├── combat.php          # evaluateHit(), processShot(), processBurst()
+│   ├── armor.php           # applyDamage(), locationKey(), defaultSP()
+│   ├── fire_log.php        # logFireEvent(), getRecentEvents()
+│   ├── rate_limit.php      # IP-based request rate limiting (APCu)
+│   └── db.php              # getDB() — PDO connection, env vars or constants
+├── db/
+│   └── schema.sql          # MariaDB table: fire_events
 ├── tests/
-│   ├── run.php         # Test runner: php tests/run.php
+│   ├── run.php             # Test runner: php tests/run.php
 │   ├── test_dice.php
 │   ├── test_combat.php
-│   └── test_armor.php
+│   ├── test_armor.php
+│   ├── test_fire_log.php
+│   ├── test_rate_limit.php
+│   ├── test_roll_helpers.php
+│   └── test_damage.js      # JS damage parsing tests
 ├── css/
-│   └── style.css       # Styles
+│   └── style.css           # Styles
 └── js/
-    └── app.js          # Client-side logic (fetch, localStorage, UI)
+    └── app.js              # Client-side logic (fetch, localStorage, UI)
 ```
 
 ## Coding Conventions
@@ -38,6 +52,7 @@ dice2/
 - CSS uses 2-space indentation
 - JavaScript uses 2-space indentation
 - No external libraries or CDN dependencies
+- No Composer/npm dependencies
 - All dice rolls use PHP's `random_int()` for cryptographically secure randomness
 - PHP logic is kept server-side; localStorage is used only for persisting armor/target state between sessions
 
@@ -52,7 +67,7 @@ dice2/
   - Automatic: each shot is an independent to-hit roll (same skill + D10 per shot); user specifies total shot count
 
 ## Key Constraints
-- No Docker, no CI/CD pipelines
-- No external PHP packages or Composer
 - No JavaScript frameworks (no React, Vue, etc.)
+- No external PHP packages or Composer
+- No CI/CD pipelines
 - Integers only for all game values unless explicitly noted

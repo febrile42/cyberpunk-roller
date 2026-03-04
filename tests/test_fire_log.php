@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
 /**
  * Integration tests for saveFireEvent() (src/fire_log.php).

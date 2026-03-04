@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
 /**
  * Tests for clientIp() and enforceRateLimit() in src/rate_limit.php.
