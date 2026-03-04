@@ -290,8 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeId = loadState().activeTargetId;
       if (activeId) updateActiveDamage(computeRunDamage(data));
 
-      // Auto-expand the event just fired and immediately refresh the log
-      if (data.eventId) _expandedIds.add(data.eventId);
       fetchFireLog(true);
 
     } catch (err) {
@@ -395,9 +393,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res  = await fetch('api/events.php');
       _logEvents = await res.json();
-      if (_initialLoad) {
+      if (scrollToTop || _initialLoad) {
         _initialLoad = false;
-        if (_logEvents.length > 0 && _expandedIds.size === 0) {
+        if (_logEvents.length > 0) {
+          _expandedIds.clear();
           _expandedIds.add(_logEvents[0].id);
         }
       }
