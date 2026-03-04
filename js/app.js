@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `<div class="log-event">`;
       html += `<div class="log-row${expanded ? ' expanded' : ''}" data-id="${ev.id}">`;
       html += `<span class="log-toggle">${toggle}</span>`;
-      html += `<span class="log-mode">${modeLabel[ev.mode] || ev.mode.toUpperCase()}</span>`;
+      html += `<span class="log-mode">${modeLabel[ev.mode] || escapeHtml(ev.mode).toUpperCase()}</span>`;
       html += `<span class="log-tally">${buildLogTally(ev)}</span>`;
       html += `<span class="log-params">${params}</span>`;
       html += `<span class="log-time">${firedAtTime(ev.fired_at)}</span>`;

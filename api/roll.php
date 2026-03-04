@@ -1,10 +1,15 @@
 <?php
 header('Content-Type: application/json');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
 
 require_once __DIR__ . '/../src/dice.php';
 require_once __DIR__ . '/../src/combat.php';
 require_once __DIR__ . '/../src/armor.php';
 require_once __DIR__ . '/../src/fire_log.php';
+require_once __DIR__ . '/../src/rate_limit.php';
+
+enforceRateLimit(clientIp());
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -26,6 +31,9 @@ $skill      = array_key_exists('skill', $input)      ? (int)$input['skill']     
 $difficulty = array_key_exists('difficulty', $input) ? (int)$input['difficulty'] : null;
 $damage     = trim((string)($input['damage'] ?? ''));
 $targetName = isset($input['targetName']) ? trim((string)$input['targetName']) : null;
+if ($targetName !== null && strlen($targetName) > 100) {
+    $targetName = substr($targetName, 0, 100);
+}
 
 $missing = [];
 if ($mode === '')         $missing[] = 'mode';
@@ -93,9 +101,9 @@ switch ($mode) {
 
     case 'auto':
         $shotCount = array_key_exists('shots', $input) ? (int)$input['shots'] : 0;
-        if ($shotCount < 1) {
+        if ($shotCount < 1 || $shotCount > 200) {
             http_response_code(400);
-            echo json_encode(['error' => '"shots" must be a positive integer for automatic mode.']);
+            echo json_encode(['error' => '"shots" must be between 1 and 200.']);
             exit;
         }
 
@@ -128,9 +136,9 @@ switch ($mode) {
 
     case 'burst':
         $burstCount = array_key_exists('bursts', $input) ? (int)$input['bursts'] : 0;
-        if ($burstCount < 1) {
+        if ($burstCount < 1 || $burstCount > 10) {
             http_response_code(400);
-            echo json_encode(['error' => '"bursts" must be a positive integer for burst mode.']);
+            echo json_encode(['error' => '"bursts" must be between 1 and 10.']);
             exit;
         }
 
