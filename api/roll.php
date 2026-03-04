@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');

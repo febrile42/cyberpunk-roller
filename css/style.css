@@ -1,6 +1,5 @@
-/* ============================================================
-   CP2020 Combat Calculator
-   ============================================================ */
+/* SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0 */
+/* CP2020 Combat Calculator ================================= */
 
 :root {
   --bg:           #090909;
@@ -867,6 +866,35 @@ button {
 .sp-input.sp-input-zero {
   color: var(--miss-fg);
   border-color: rgba(192, 69, 69, 0.45);
+}
+
+/* ── Left panel — flex layout for credit link at bottom ─────── */
+
+#form-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#combat-form {
+  flex: 1;
+}
+
+.panel-credit {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.panel-credit a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.panel-credit a:hover {
+  color: var(--accent);
 }
 
 /* ── Responsive: stack columns on narrow screens ─────────────── */

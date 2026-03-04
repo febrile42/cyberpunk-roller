@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // ── Database configuration ─────────────────────────────────────────────────────
 // For Docker: set DB_HOST, DB_NAME, DB_USER, DB_PASS as environment variables.
 // For native hosting: edit the defaults below.

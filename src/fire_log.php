@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
 /**
  * Persist a fire event to the shared log and return its new row ID.

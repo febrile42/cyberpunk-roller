@@ -1,4 +1,5 @@
 <?php
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('Referrer-Policy: no-referrer');
@@ -78,6 +79,10 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
         <div id="active-target-indicator" class="active-target-indicator"></div>
 
       </form>
+      <div class="panel-credit">
+        <a href="https://joshgister.com" target="_blank" rel="noopener noreferrer">joshgister.com</a>
+        · <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener noreferrer">PolyForm NC 1.0</a>
+      </div>
     </section>
 
     <section id="results-panel" class="panel" aria-label="Fire Log" aria-live="polite">
