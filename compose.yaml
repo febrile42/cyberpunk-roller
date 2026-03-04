@@ -5,29 +5,28 @@ services:
       - "8080:80"
     environment:
       DB_HOST: db
-      DB_NAME: ${DB_NAME:-cyberpunk_roller}
-      DB_USER: ${DB_USER:-app}
-      DB_PASS: ${DB_PASS:?Set DB_PASS in .env}
+      DB_NAME: cyberpunk_roller
+      DB_USER: cyberpunk_roller
+      DB_PASS: ${DB_PASS:-cyberpunk_roller_secret}
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: mariadb:lts
+    image: mariadb:11
     environment:
-      MARIADB_DATABASE: ${DB_NAME:-cyberpunk_roller}
-      MARIADB_USER: ${DB_USER:-app}
-      MARIADB_PASSWORD: ${DB_PASS:?Set DB_PASS in .env}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:?Set DB_ROOT_PASS in .env}
+      MARIADB_DATABASE: cyberpunk_roller
+      MARIADB_USER: cyberpunk_roller
+      MARIADB_PASSWORD: ${DB_PASS:-cyberpunk_roller_secret}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-rootsecret}
     volumes:
       - db_data:/var/lib/mysql
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 15s
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
 
 volumes:
   db_data:

@@ -16,11 +16,18 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 ### Docker (recommended)
 
 ```bash
-cp .env.example .env     # set DB_PASS and DB_ROOT_PASS
-docker compose up --build -d
+docker compose up -d
 ```
 
-App available at `http://localhost:8080`. MariaDB and the schema are initialized automatically on first run. Data persists in a named Docker volume (`db_data`).
+App available at `http://localhost:8080`. MariaDB and the schema are initialized automatically on first run. Default credentials are baked into `compose.yaml`; the DB port is not exposed externally. Override by setting `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
+
+**Updating the app** (rebuilds the app image, DB data intact):
+
+```bash
+docker compose down && docker compose up --build -d
+```
+
+**Data safety:** fire log data lives in a named Docker volume (`db_data`) and survives container restarts and rebuilds. Only `docker compose down -v` deletes it — avoid unless you intend to wipe all data.
 
 ### Native (Apache / Nginx / PHP built-in server)
 
