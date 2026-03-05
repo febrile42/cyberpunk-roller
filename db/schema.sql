@@ -1,16 +1,17 @@
 -- CP2020 Combat Calculator — fire event log
--- Run once against your MariaDB database to create the table.
---   mysql -u USER -p DBNAME < db/schema.sql
+-- SQLite reference schema. The table and index are created automatically
+-- by src/db.php on first connection — no manual import needed.
 
 CREATE TABLE IF NOT EXISTS fire_events (
-  id            INT UNSIGNED     AUTO_INCREMENT PRIMARY KEY,
-  fired_at      DATETIME(3)      NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  mode          ENUM('single','auto','burst') NOT NULL,
-  params_json   TEXT             NOT NULL,   -- {skill, difficulty, damage, shots?, bursts?}
-  hits          SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  misses        SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  total_shots   SMALLINT UNSIGNED NOT NULL DEFAULT 0,  -- shots fired (auto/single) or bursts attempted
-  total_bullets SMALLINT UNSIGNED NOT NULL DEFAULT 0,  -- burst mode: bullets that landed
-  results_json  MEDIUMTEXT       NOT NULL,             -- shots[] or bursts[] array
-  INDEX idx_fired_at (fired_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  id            INTEGER  PRIMARY KEY AUTOINCREMENT,
+  fired_at      TEXT     NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+  mode          TEXT     NOT NULL CHECK(mode IN ('single','auto','burst')),
+  params_json   TEXT     NOT NULL,   -- {skill, difficulty, damage, shots?, bursts?}
+  hits          INTEGER  NOT NULL DEFAULT 0,
+  misses        INTEGER  NOT NULL DEFAULT 0,
+  total_shots   INTEGER  NOT NULL DEFAULT 0,  -- shots fired (auto/single) or bursts attempted
+  total_bullets INTEGER  NOT NULL DEFAULT 0,  -- burst mode: bullets that landed
+  results_json  TEXT     NOT NULL              -- shots[] or bursts[] array
+);
+
+CREATE INDEX IF NOT EXISTS idx_fired_at ON fire_events(fired_at);

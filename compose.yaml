@@ -4,31 +4,8 @@ services:
     restart: unless-stopped
     ports:
       - "8080:80"
-    environment:
-      DB_HOST: db
-      DB_NAME: cyberpunk_roller
-      DB_USER: cyberpunk_roller
-      DB_PASS: ${DB_PASS:-cyberpunk_roller_secret}
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: mariadb:11.4
-    restart: unless-stopped
-    environment:
-      MARIADB_DATABASE: cyberpunk_roller
-      MARIADB_USER: cyberpunk_roller
-      MARIADB_PASSWORD: ${DB_PASS:-cyberpunk_roller_secret}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-rootsecret}
     volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      - db_data:/var/lib/cyberpunk-roller
 
 volumes:
   db_data:

@@ -8,9 +8,8 @@ LABEL org.opencontainers.image.title="Cyberpunk Roller" \
 # Enable mod_rewrite (required for .htaccess RewriteRules)
 RUN a2enmod rewrite
 
-# Install pdo_mysql and APCu
-RUN docker-php-ext-install pdo_mysql \
-    && pecl install apcu \
+# Install APCu (pdo_sqlite is built into PHP — no separate install needed)
+RUN pecl install apcu \
     && docker-php-ext-enable apcu
 
 # PHP production settings
@@ -32,5 +31,7 @@ RUN printf '<VirtualHost *:80>\n\tDocumentRoot /var/www/html\n\t<Directory /var/
     > /etc/apache2/sites-available/000-default.conf
 
 COPY . /var/www/html/
+
+RUN mkdir -p /var/lib/cyberpunk-roller && chown www-data:www-data /var/lib/cyberpunk-roller
 
 RUN chown -R www-data:www-data /var/www/html

@@ -33,11 +33,11 @@ cd cyberpunk-roller
 docker build -t febrile42/cyberpunk-roller:latest . && docker compose up -d
 ```
 
-App available at `http://localhost:8080`. MariaDB and the schema initialize automatically on first run. Default credentials are in `compose.yaml`; override with `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
+App available at `http://localhost:8080`. Single-container deploy — SQLite database is created automatically on first run and persisted in a Docker named volume.
 
 ### Native (Apache / Nginx / PHP built-in server)
 
-Requirements: PHP 8.0+, `pdo_mysql` extension. The `apcu` extension is optional — when present it enables per-IP rate limiting on the roll API.
+Requirements: PHP 8.0+, `pdo_sqlite` extension (bundled with PHP — no separate install needed). The `apcu` extension is optional — when present it enables per-IP rate limiting on the roll API.
 
 ```bash
 php -S localhost:8000

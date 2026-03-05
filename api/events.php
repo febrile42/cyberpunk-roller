@@ -16,7 +16,7 @@ try {
         "SELECT id, fired_at, mode, params_json, hits, misses,
                 total_shots, total_bullets, results_json
          FROM fire_events
-         WHERE fired_at > NOW() - INTERVAL 15 MINUTE
+         WHERE fired_at > datetime('now', '-15 minutes')
          ORDER BY fired_at DESC"
     );
 

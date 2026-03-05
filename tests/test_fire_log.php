@@ -92,7 +92,7 @@ assert_true($count >= 3, 'saveFireEvent: at least 3 rows inserted in transaction
 $db->exec(
     "INSERT INTO fire_events
         (mode, params_json, hits, misses, total_shots, total_bullets, results_json, fired_at)
-     VALUES ('single', '{}', 0, 1, 1, 0, '[]', NOW() - INTERVAL 20 MINUTE)"
+     VALUES ('single', '{}', 0, 1, 1, 0, '[]', datetime('now', '-20 minutes'))"
 );
 $oldId = (int)$db->lastInsertId();
 assert_true($oldId > 0, 'saveFireEvent pruning: old row inserted');
