@@ -33,16 +33,6 @@ function getDB(): PDO
 }
 
 /**
- * Remove entries older than 18 minutes — 3 minutes beyond the 15-minute
- * display window, ensuring no event still visible to a user is deleted.
- * Called on every insert so the table stays bounded without a cron job.
- */
-function pruneOldEvents(): void
-{
-    getDB()->exec("DELETE FROM fire_events WHERE fired_at < datetime('now', '-18 minutes')");
-}
-
-/**
  * Safety backstop against runaway DB growth.
  *
  * Threshold rationale: worst-case small group (8 users, rate-limited,
