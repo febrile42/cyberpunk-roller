@@ -4,6 +4,8 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 
 ## What It Does
 
+![Cyberpunk Roller screenshot](https://joshgister.com/images/jg-cyberpunk-roller.png)
+
 - Calculates whether shots hit based on a character's to-hit skill and a difficulty score
 - Supports three fire modes: **Single Shot**, **3-Round Burst**, and **Automatic**
 - Rolls hit location (Head, Torso, Arms, Legs) for each successful hit
@@ -15,15 +17,19 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 
 ### Docker
 
-Pull the pre-built image from Docker Hub:
+Image: [`febrile42/cyberpunk-roller`](https://hub.docker.com/r/febrile42/cyberpunk-roller) · Source: [GitHub](https://github.com/febrile42/cyberpunk-roller)
+
+Download [`compose.yaml`](https://raw.githubusercontent.com/febrile42/cyberpunk-roller/master/compose.yaml) from the repo, then:
 
 ```bash
 docker compose pull && docker compose up -d
 ```
 
-Or build from source:
+Or clone and build from source:
 
 ```bash
+git clone https://github.com/febrile42/cyberpunk-roller.git
+cd cyberpunk-roller
 docker build -t febrile42/cyberpunk-roller:latest . && docker compose up -d
 ```
 
@@ -77,3 +83,7 @@ The `fire_events` table is created automatically on first connection. `db/schema
 ## Storage
 
 Armor and target state is saved in browser **localStorage** — no server-side database required.
+
+## License
+
+[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/)
