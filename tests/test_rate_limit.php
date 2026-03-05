@@ -9,6 +9,8 @@
  *   - In CLI, APCu requires apc.enable_cli=1 in php.ini; apcu_enabled() detects this.
  *   - The "over-limit → exit()" case must run in a subprocess because exit() would
  *     terminate the test runner itself.
+ *   - IDEs may flag apcu_* calls as undefined (P1010); this is a false positive —
+ *     APCu is a C extension with no PHP-side declaration.
  */
 
 require_once __DIR__ . '/../src/rate_limit.php';
