@@ -1,3 +1,12 @@
 .git
+.gitignore
 .vscode
+.DS_Store
 tests/
+compose.yaml
+README.md
+CLAUDE.md
+LICENSE
+db/
+Dockerfile
+.dockerignore
