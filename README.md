@@ -39,9 +39,10 @@ php -S localhost:8000
 
 Open `http://localhost:8000`. Roll results work without a database — the fire log requires MariaDB:
 
-1. Import the schema: `mariadb -u root -p < db/schema.sql`
-2. Edit credentials at the top of `src/db.php`
-3. Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent
+1. Edit credentials at the top of `src/db.php`
+2. Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent
+
+The `fire_events` table is created automatically on first connection. `db/schema.sql` is provided for reference.
 
 ## Game Rules Summary
 

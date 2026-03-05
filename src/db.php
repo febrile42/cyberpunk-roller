@@ -22,6 +22,20 @@ function getDB(): PDO
             getenv('DB_PASS') ?: DB_PASS_DEFAULT,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
+        $pdo->exec(
+            "CREATE TABLE IF NOT EXISTS fire_events (
+                id            INT UNSIGNED      AUTO_INCREMENT PRIMARY KEY,
+                fired_at      DATETIME(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                mode          ENUM('single','auto','burst') NOT NULL,
+                params_json   TEXT              NOT NULL,
+                hits          SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+                misses        SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+                total_shots   SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+                total_bullets SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+                results_json  MEDIUMTEXT        NOT NULL,
+                INDEX idx_fired_at (fired_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+        );
     }
     return $pdo;
 }

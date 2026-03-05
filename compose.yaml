@@ -21,7 +21,6 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-rootsecret}
     volumes:
       - db_data:/var/lib/mysql
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
