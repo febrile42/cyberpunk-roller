@@ -36,6 +36,7 @@ function saveFireEvent(array $r): int
 
     // Prune events older than 15 minutes to keep the table tidy
     $db->exec("DELETE FROM fire_events WHERE fired_at < datetime('now', '-15 minutes')");
+    pruneOversizedDB();
 
     return (int)$db->lastInsertId();
 }

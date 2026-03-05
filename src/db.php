@@ -31,3 +31,37 @@ function getDB(): PDO
     }
     return $pdo;
 }
+
+/**
+ * Safety backstop against runaway DB growth.
+ *
+ * Threshold rationale: worst-case small group (8 users, rate-limited,
+ * one roll every 10 s over the 18-min retention window) produces ~864
+ * events × ~3 KB avg ≈ 2.6 MB. 5 MB gives roughly 2× headroom.
+ *
+ * When exceeded, entries already outside the visible 15-min window are
+ * dropped first. If still over threshold (extreme edge case), the oldest
+ * half of remaining rows is removed.
+ */
+function pruneOversizedDB(): void
+{
+    $db        = getDB();
+    $pageCount = (int)$db->query('PRAGMA page_count')->fetchColumn();
+    $pageSize  = (int)$db->query('PRAGMA page_size')->fetchColumn();
+    if ($pageCount * $pageSize < 5_242_880) return; // under 5 MB — nothing to do
+
+    // First pass: drop entries already outside the visible window
+    $db->exec("DELETE FROM fire_events WHERE fired_at < datetime('now', '-10 minutes')");
+
+    // Second pass: if still over threshold, drop the oldest half
+    $pageCount = (int)$db->query('PRAGMA page_count')->fetchColumn();
+    if ($pageCount * $pageSize >= 5_242_880) {
+        $half = (int)$db->query('SELECT COUNT(*) / 2 FROM fire_events')->fetchColumn();
+        if ($half > 0) {
+            $db->exec(
+                "DELETE FROM fire_events WHERE id IN
+                 (SELECT id FROM fire_events ORDER BY fired_at ASC LIMIT $half)"
+            );
+        }
+    }
+}
