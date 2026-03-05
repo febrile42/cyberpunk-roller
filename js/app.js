@@ -124,10 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function addTarget(name, isGeneric) {
     const state        = loadState();
-    const genericCount = state.targets.filter(t =>  t.generic).length;
-    const uniqueCount  = state.targets.filter(t => !t.generic).length;
-    const autoName     = name.trim() ||
-      (isGeneric ? `Generic ${genericCount + 1}` : `Unique ${uniqueCount + 1}`);
+    const maxGeneric = state.targets.filter(t =>  t.generic)
+      .reduce((max, t) => { const m = t.name.match(/^Generic (\d+)$/); return m ? Math.max(max, +m[1]) : max; }, 0);
+    const maxUnique  = state.targets.filter(t => !t.generic)
+      .reduce((max, t) => { const m = t.name.match(/^Unique (\d+)$/);  return m ? Math.max(max, +m[1]) : max; }, 0);
+    const autoName   = name.trim() ||
+      (isGeneric ? `Generic ${maxGeneric + 1}` : `Unique ${maxUnique + 1}`);
 
     const target = { id: 't' + Date.now(), name: autoName, generic: isGeneric };
     target.sp            = isGeneric ? { ...state.genericSP } : defaultSP();
@@ -169,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       // Sync individual generic target SP inputs in the DOM
       document.querySelectorAll(`.sp-input[data-generic-target][data-location="${location}"]`)
-        .forEach(el => { el.value = value; });
+        .forEach(el => { el.value = value; el.classList.toggle('sp-input-zero', value === 0); });
     } else {
       const target = state.targets.find(t => t.id === targetId);
       if (target) {

@@ -47,7 +47,7 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 
         <div id="field-shots" class="form-field">
           <label for="shots">Number of Shots</label>
-          <input type="number" id="shots" name="shots" min="1" max="100" value="10">
+          <input type="number" id="shots" name="shots" min="1" max="100" value="30">
         </div>
 
         <div id="field-bursts" class="form-field" hidden>
