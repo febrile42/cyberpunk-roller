@@ -1,5 +1,6 @@
 services:
   app:
+    image: febrile42/cyberpunk-roller:latest
     build: .
     ports:
       - "8080:80"

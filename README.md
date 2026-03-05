@@ -15,17 +15,19 @@ A browser-based PHP web app for automating combat calculations in the **Cyberpun
 
 ### Docker
 
+Pull the pre-built image from Docker Hub:
+
 ```bash
-docker compose up -d
+docker compose pull && docker compose up -d
+```
+
+Or build from source:
+
+```bash
+docker compose up --build -d
 ```
 
 App available at `http://localhost:8080`. MariaDB and the schema initialize automatically on first run. Default credentials are in `compose.yaml`; override with `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
-
-To rebuild after updating files:
-
-```bash
-docker compose down && docker compose up --build -d
-```
 
 ### Native (Apache / Nginx / PHP built-in server)
 
