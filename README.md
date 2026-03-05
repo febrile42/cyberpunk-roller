@@ -24,7 +24,7 @@ docker compose pull && docker compose up -d
 Or build from source:
 
 ```bash
-docker compose up --build -d
+docker build -t febrile42/cyberpunk-roller:latest . && docker compose up -d
 ```
 
 App available at `http://localhost:8080`. MariaDB and the schema initialize automatically on first run. Default credentials are in `compose.yaml`; override with `DB_PASS` / `DB_ROOT_PASS` in a `.env` file if desired.
