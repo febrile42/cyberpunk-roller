@@ -3,7 +3,7 @@
 
 /**
  * Persist a fire event to the shared log and return its new row ID.
- * Old events (> 15 min) are pruned on each insert.
+ * Old events (> 18 min) are pruned on each insert.
  *
  * Requires src/db.php to be loaded before calling this function.
  *
@@ -34,8 +34,7 @@ function saveFireEvent(array $r): int
         $results,
     ]);
 
-    // Prune events older than 15 minutes to keep the table tidy
-    $db->exec("DELETE FROM fire_events WHERE fired_at < datetime('now', '-15 minutes')");
+    pruneOldEvents();
     pruneOversizedDB();
 
     return (int)$db->lastInsertId();

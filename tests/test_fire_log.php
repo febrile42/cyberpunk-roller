@@ -102,7 +102,7 @@ saveFireEvent(singleResponse());
 $stillExists = (int)$db->query(
     "SELECT COUNT(*) FROM fire_events WHERE id = $oldId"
 )->fetchColumn();
-assert_equal($stillExists, 0, 'saveFireEvent: row older than 15 min is pruned');
+assert_equal($stillExists, 0, 'saveFireEvent: row older than 18 min is pruned');
 
 // ── Roll back all test data ───────────────────────────────────────────────────
 $db->rollBack();
