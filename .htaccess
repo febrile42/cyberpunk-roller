@@ -2,5 +2,5 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteRule ^(src|tests|db)(/|$) - [F,L]
+  RewriteRule ^(src|tests|db|data)(/|$) - [F,L]
 </IfModule>

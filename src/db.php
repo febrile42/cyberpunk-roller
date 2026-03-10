@@ -4,7 +4,7 @@
 // For Docker: set DB_PATH as an environment variable.
 // For native hosting: edit the default path below.
 
-const DB_PATH_DEFAULT = '/var/lib/cyberpunk-roller/fire.db';
+define('DB_PATH_DEFAULT', __DIR__ . '/../data/fire.db');
 // ──────────────────────────────────────────────────────────────────────────────
 
 function getDB(): PDO
@@ -53,15 +53,14 @@ function pruneOversizedDB(): void
     // First pass: drop entries already outside the visible window
     $db->exec("DELETE FROM fire_events WHERE fired_at < datetime('now', '-10 minutes')");
 
-    // Second pass: if still over threshold, drop the oldest half
-    $pageCount = (int)$db->query('PRAGMA page_count')->fetchColumn();
-    if ($pageCount * $pageSize >= 5_242_880) {
-        $half = (int)$db->query('SELECT COUNT(*) / 2 FROM fire_events')->fetchColumn();
-        if ($half > 0) {
-            $db->exec(
-                "DELETE FROM fire_events WHERE id IN
-                 (SELECT id FROM fire_events ORDER BY fired_at ASC LIMIT $half)"
-            );
-        }
+    // Second pass: if rows remain anomalously high after first pass, drop the oldest half
+    // (page_count won't decrease without VACUUM, so check row count instead of size)
+    $rowCount = (int)$db->query('SELECT COUNT(*) FROM fire_events')->fetchColumn();
+    if ($rowCount > 500) {
+        $half = intdiv($rowCount, 2);
+        $db->exec(
+            "DELETE FROM fire_events WHERE id IN
+             (SELECT id FROM fire_events ORDER BY fired_at ASC LIMIT $half)"
+        );
     }
 }
