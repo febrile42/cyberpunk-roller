@@ -51,7 +51,15 @@ Override the path with the `DB_PATH` environment variable if needed:
 DB_PATH=/path/to/fire.db php -S localhost:8000
 ```
 
-Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent. The `fire_events` table and `data/` directory are created automatically on first connection. `db/schema.sql` is provided for reference.
+Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent. The `fire_events` table is created automatically on first connection. `db/schema.sql` is provided for reference.
+
+**Shared host note:** If the `data/` directory was not created during upload (some FTP clients skip dotfiles), or if PHP runs as `www-data` rather than your account user, the fire log will return 503. Fix with:
+
+```bash
+chmod 777 data/
+```
+
+The PHP error log will contain a `cyberpunk-roller` prefixed message with the exact cause if this occurs.
 
 ## Game Rules Summary
 

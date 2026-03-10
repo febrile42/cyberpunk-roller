@@ -38,7 +38,8 @@ try {
     }, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     echo json_encode($events);
-} catch (Throwable $_) {
+} catch (Throwable $e) {
+    error_log('cyberpunk-roller events: ' . $e->getMessage());
     http_response_code(503);
     echo json_encode(['error' => 'Fire log unavailable.']);
 }

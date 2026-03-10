@@ -201,7 +201,8 @@ switch ($mode) {
 try {
     require_once __DIR__ . '/../src/db.php';
     $response['eventId'] = saveFireEvent($response);
-} catch (Throwable $_) {
+} catch (Throwable $e) {
+    error_log('cyberpunk-roller roll (DB): ' . $e->getMessage());
     $response['eventId'] = null;
 }
 

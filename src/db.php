@@ -12,6 +12,10 @@ function getDB(): PDO
     static $pdo = null;
     if ($pdo === null) {
         $path = getenv('DB_PATH') ?: DB_PATH_DEFAULT;
+        $dir  = dirname($path);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
         $pdo  = new PDO('sqlite:' . $path, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $pdo->exec('PRAGMA journal_mode=WAL');
         $pdo->exec(
