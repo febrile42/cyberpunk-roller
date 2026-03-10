@@ -43,12 +43,15 @@ Requirements: PHP 8.0+, `pdo_sqlite` extension (bundled with PHP — no separate
 php -S localhost:8000
 ```
 
-Open `http://localhost:8000`. Roll results work without a database — the fire log requires MariaDB:
+Open `http://localhost:8000`. Roll results work without a database — the fire log uses SQLite, stored by default at `data/fire.db` inside the project directory (blocked from web access via `.htaccess`).
 
-1. Edit credentials at the top of `src/db.php`
-2. Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent
+Override the path with the `DB_PATH` environment variable if needed:
 
-The `fire_events` table is created automatically on first connection. `db/schema.sql` is provided for reference.
+```bash
+DB_PATH=/path/to/fire.db php -S localhost:8000
+```
+
+Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent. The `fire_events` table and `data/` directory are created automatically on first connection. `db/schema.sql` is provided for reference.
 
 ## Game Rules Summary
 

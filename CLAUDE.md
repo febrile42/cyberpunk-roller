@@ -6,7 +6,7 @@ A PHP web app for automating Cyberpunk 2020 TTRPG combat calculations: to-hit ro
 ## Tech Stack
 - **Language:** PHP (server-side logic)
 - **Frontend:** Standard HTML/CSS/JavaScript (no frameworks)
-- **Storage:** Browser localStorage for armor/target state; MariaDB for fire log persistence (optional — app works without a database)
+- **Storage:** Browser localStorage for armor/target state; SQLite for fire log persistence (optional — app works without a database)
 - **Infrastructure:** Docker + Docker Compose (optional); any PHP-capable web server works natively
 
 ## File Structure
@@ -16,7 +16,7 @@ cyberpunk-roller/
 ├── README.md               # Project overview and usage
 ├── LICENSE                 # PolyForm Noncommercial 1.0.0
 ├── Dockerfile              # PHP 8.2 Apache image
-├── compose.yaml            # Docker Compose: app + MariaDB
+├── compose.yaml            # Docker Compose: single-service stack with SQLite volume
 ├── .htaccess               # Apache: directory listing off, blocks /src /tests /db
 ├── index.php               # Main entry point / UI
 ├── api/
@@ -30,7 +30,7 @@ cyberpunk-roller/
 │   ├── rate_limit.php      # IP-based request rate limiting (APCu)
 │   └── db.php              # getDB() — PDO connection, env vars or constants
 ├── db/
-│   └── schema.sql          # MariaDB table: fire_events
+│   └── schema.sql          # SQLite reference schema: fire_events
 ├── tests/
 │   ├── run.php             # Test runner: php tests/run.php
 │   ├── test_dice.php
