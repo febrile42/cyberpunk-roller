@@ -5,11 +5,11 @@
   --bg:           #090909;
   --bg-panel:     #0e0e0e;
   --bg-input:     #161616;
-  --border:       #1e1e1e;
-  --border-hi:    #2d2d2d;
-  --text:         #888;
+  --border:       #262626;
+  --border-hi:    #363636;
+  --text:         #9e9e9e;
   --text-hi:      #ccc;
-  --text-dim:     #666;
+  --text-dim:     #828282;
   --accent:       #c8a200;
   --accent-hi:    #e8be00;
   --hit-bg:       #071007;
@@ -114,7 +114,7 @@ body {
   color: var(--accent);
   font-size: 10px;
   font-weight: bold;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   margin-bottom: 14px;
   padding-bottom: 8px;
@@ -145,8 +145,8 @@ body {
 
 #mode-fieldset legend {
   color: var(--text-dim);
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 0 5px;
 }
@@ -179,8 +179,8 @@ body {
 .form-field label {
   display: block;
   color: var(--text-dim);
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -285,7 +285,7 @@ button {
 
 .log-mode {
   color: var(--accent);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: bold;
   letter-spacing: 0.2em;
 }
@@ -305,14 +305,14 @@ button {
 
 .log-params {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   text-align: right;
   white-space: nowrap;
 }
 
 .log-time {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   white-space: nowrap;
 }
 
@@ -388,7 +388,7 @@ button {
   padding: 7px 10px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
 }
 
 .shot-roll {
@@ -556,8 +556,8 @@ button {
 
 .target-section-title {
   color: var(--text-dim);
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   padding-bottom: 5px;
   margin-bottom: 6px;
@@ -592,8 +592,8 @@ button {
 
 .sp-field label {
   color: var(--text-dim);
-  font-size: 8px;
-  letter-spacing: 0.15em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -634,8 +634,8 @@ button {
 
 .dmg-field label {
   color: var(--text-dim);
-  font-size: 8px;
-  letter-spacing: 0.15em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -710,7 +710,7 @@ button {
 }
 
 .target-badge {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: bold;
   padding: 1px 5px;
   letter-spacing: 0.12em;
