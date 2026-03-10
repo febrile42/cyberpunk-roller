@@ -53,13 +53,21 @@ DB_PATH=/path/to/fire.db php -S localhost:8000
 
 Point your web server's document root at the project with `AllowOverride All` (Apache) or equivalent. The `fire_events` table is created automatically on first connection. `db/schema.sql` is provided for reference.
 
-**Shared host note:** If the `data/` directory was not created during upload (some FTP clients skip dotfiles), or if PHP runs as `www-data` rather than your account user, the fire log will return 503. Fix with:
+**Shared host note:** Two things can prevent the fire log from working:
+
+1. **`pdo_sqlite` not loaded** — the extension must be enabled. On Debian/Ubuntu: `sudo apt install php-sqlite3`. On cPanel shared hosts it is usually pre-enabled.
+
+2. **Write permission denied** — the web server user (`www-data` on Debian, or your cPanel PHP-FPM user) must be able to write to the `data/` directory and the `fire.db` file. Fix:
 
 ```bash
 chmod 777 data/
+# If fire.db already exists (e.g. created by a previous failed attempt):
+chmod 666 data/fire.db
 ```
 
-The PHP error log will contain a `cyberpunk-roller` prefixed message with the exact cause if this occurs.
+The PHP error log will contain a `cyberpunk-roller` prefixed message with the exact cause. Common messages:
+- `could not find driver` → install / enable `pdo_sqlite`
+- `attempt to write a readonly database` → fix permissions as above
 
 ## Game Rules Summary
 
