@@ -30,10 +30,13 @@ RUN { \
 RUN printf '<VirtualHost *:80>\n\tDocumentRoot /var/www/html\n\t<Directory /var/www/html>\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>\n</VirtualHost>\n' \
     > /etc/apache2/sites-available/000-default.conf
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-
 COPY . /var/www/html/
+
+# Named volumes are created root-owned; fix ownership at container startup
+# before Apache runs so www-data can write the SQLite DB file.
+RUN printf '#!/bin/sh\nchown www-data:www-data /var/lib/cyberpunk-roller\nexec "$@"\n' \
+    > /docker-entrypoint.sh \
+    && chmod +x /docker-entrypoint.sh
 
 RUN mkdir -p /var/lib/cyberpunk-roller \
     && chown -R www-data:www-data /var/www/html

@@ -10,4 +10,3 @@ LICENSE
 db/
 Dockerfile
 .dockerignore
-docker-entrypoint.sh
