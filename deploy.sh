@@ -27,6 +27,8 @@ mkdir -p \
     "$DEST/css" \
     "$DEST/data"
 
+chmod 777 "$DEST/data"
+
 fetch index.php
 fetch .htaccess
 fetch LICENSE
@@ -43,5 +45,3 @@ fetch css/style.css
 
 echo ""
 echo "cyberpunk-roller deployed to: $DEST"
-echo "If the fire log returns 503, make the data directory writable:"
-echo "  chmod 777 $DEST/data/"
