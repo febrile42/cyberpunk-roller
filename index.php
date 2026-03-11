@@ -80,7 +80,7 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 
       </form>
       <div class="panel-credit">
-        <a href="https://joshgister.com" target="_blank" rel="noopener noreferrer">joshgister.com</a>
+        <a href="https://github.com/febrile42/cyberpunk-roller" target="_blank" rel="noopener noreferrer">github.com/febrile42
         · <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener noreferrer">PolyForm NC 1.0</a>
       </div>
     </section>

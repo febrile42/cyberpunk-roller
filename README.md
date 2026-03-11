@@ -39,6 +39,24 @@ App available at `http://localhost:8080`. Single-container deploy — SQLite dat
 
 Requirements: PHP 8.0+, `pdo_sqlite` extension (bundled with PHP — no separate install needed). The `apcu` extension is optional — when present it enables per-IP rate limiting on the roll API.
 
+#### Quick deploy (shared host with SSH)
+
+Downloads only the files needed to run the app — no Docker, tests, or development artifacts:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/febrile42/cyberpunk-roller/master/deploy.sh | sh
+```
+
+To review the script before running:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/febrile42/cyberpunk-roller/master/deploy.sh -o deploy.sh
+# inspect deploy.sh, then:
+sh deploy.sh [destination-dir]
+```
+
+#### PHP built-in server (local testing)
+
 ```bash
 php -S localhost:8000
 ```
