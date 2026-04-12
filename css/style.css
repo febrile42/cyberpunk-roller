@@ -923,4 +923,12 @@ button {
   #targets-panel {
     border-top: 1px solid var(--border);
   }
+
+  .site-header h1 {
+    font-size: 16px;
+  }
+
+  .log-params {
+    display: none;
+  }
 }
