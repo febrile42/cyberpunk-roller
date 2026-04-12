@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadState() {
     try {
       const raw = localStorage.getItem(LS_KEY);
-      if (!raw) return { targets: [], genericSP: defaultSP(), activeTargetId: null };
+      if (!raw) return { targets: [], genericSP: defaultSP(), activeTargetId: null, clearedAt: null };
       return JSON.parse(raw);
     } catch {
-      return { targets: [], genericSP: defaultSP(), activeTargetId: null };
+      return { targets: [], genericSP: defaultSP(), activeTargetId: null, clearedAt: null };
     }
   }
 
@@ -401,8 +401,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Pass scrollToTop=true after firing to jump to the newest entry.
   async function fetchFireLog(scrollToTop = false) {
     try {
-      const res  = await fetch('api/events.php');
-      _logEvents = await res.json();
+      const res     = await fetch('api/events.php');
+      const fetched = await res.json();
+      const cutoff  = loadState().clearedAt;
+      _logEvents = cutoff
+        ? fetched.filter(ev => ev.fired_at > cutoff)
+        : fetched;
       if (scrollToTop || _initialLoad) {
         _initialLoad = false;
         if (_logEvents.length > 0) {
@@ -766,16 +770,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resetAllCombat() {
-    // Wipe localStorage (targets, SP, active target)
-    localStorage.removeItem(LS_KEY);
+    // Record the cutoff: events before this moment are hidden from this user's view.
+    // The DB is left untouched so other users' sessions are unaffected.
+    const fresh = { targets: [], genericSP: defaultSP(), activeTargetId: null, clearedAt: new Date().toISOString() };
+    saveState(fresh);
 
     // Reset fire log state
     _logEvents   = [];
     _expandedIds.clear();
     _initialLoad = true;
-
-    // Purge server-side fire events (silently — DB is optional)
-    fetch('api/clear-events.php', { method: 'POST' }).catch(() => {});
 
     // Re-render both panels
     renderFireLog([]);
