@@ -2,24 +2,24 @@
 /* CP2020 Combat Calculator ================================= */
 
 :root {
-  --bg:           #090909;
-  --bg-panel:     #0e0e0e;
-  --bg-input:     #161616;
-  --border:       #262626;
-  --border-hi:    #363636;
-  --text:         #9e9e9e;
-  --text-hi:      #ccc;
-  --text-dim:     #828282;
-  --accent:       #c8a200;
-  --accent-hi:    #e8be00;
-  --hit-bg:       #071007;
-  --hit-fg:       #4aad52;
-  --hit-bd:       #183018;
-  --miss-bg:      #110606;
-  --miss-fg:      #c04545;
-  --miss-bd:      #381212;
-  --crit-fg:      #e07800;
-  --font:         'Courier New', Courier, monospace;
+  --bg:        #090909;
+  --bg-panel:  #0e0e0e;
+  --bg-input:  #161616;
+  --border:    #262626;
+  --border-hi: #363636;
+  --text:      #9e9e9e;
+  --text-hi:   #ccc;
+  --text-dim:  #828282;
+  --accent:    #c8a200;
+  --accent-hi: #e8be00;
+  --hit-bg:    #071007;
+  --hit-fg:    #4aad52;
+  --hit-bd:    #183018;
+  --miss-bg:   #110606;
+  --miss-fg:   #c04545;
+  --miss-bd:   #381212;
+  --crit-fg:   #e07800;
+  --font:      'Courier New', Courier, monospace;
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -49,7 +49,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -60,8 +60,8 @@ body {
 
 .site-header {
   background: var(--bg-panel);
-  border-bottom: 1px solid var(--border-hi);
-  padding: 10px 20px;
+  border-bottom: 1px solid var(--accent);
+  padding: 12px 20px;
 }
 
 .header-inner {
@@ -72,14 +72,14 @@ body {
 
 .site-header h1 {
   color: var(--accent-hi);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   letter-spacing: 0.18em;
 }
 
 .header-sub {
   color: var(--text-dim);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 
@@ -112,7 +112,7 @@ body {
 
 .panel-title {
   color: var(--accent);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -123,7 +123,7 @@ body {
 
 .panel-title-sub {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: normal;
   letter-spacing: 0.1em;
 }
@@ -131,8 +131,11 @@ body {
 
 .empty-state {
   color: var(--text-dim);
-  font-size: 11px;
+  font-size: 12px;
   font-style: italic;
+  padding: 20px 0;
+  text-align: center;
+  letter-spacing: 0.05em;
 }
 
 /* ── Form — fire mode fieldset ──────────────────────────────── */
@@ -145,7 +148,7 @@ body {
 
 #mode-fieldset legend {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 0 5px;
@@ -155,7 +158,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 3px 0;
+  padding: 7px 0;
   cursor: pointer;
 }
 
@@ -179,7 +182,7 @@ body {
 .form-field label {
   display: block;
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -198,7 +201,7 @@ body {
   transition: border-color 0.12s;
 }
 
-.form-field input:focus {
+.form-field input:focus-visible {
   border-color: var(--accent);
 }
 
@@ -219,10 +222,10 @@ body {
 
 button {
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.18em;
-  padding: 9px 14px;
+  padding: 11px 16px;
   border: 1px solid;
   cursor: pointer;
   transition: background 0.1s, color 0.1s, border-color 0.1s;
@@ -266,7 +269,7 @@ button {
   grid-template-columns: 16px 52px 1fr auto auto;
   align-items: center;
   column-gap: 10px;
-  padding: 5px 10px;
+  padding: 7px 10px;
   background: var(--bg-input);
   border: 1px solid var(--border-hi);
   cursor: pointer;
@@ -280,18 +283,18 @@ button {
 
 .log-toggle {
   color: var(--text-dim);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .log-mode {
   color: var(--accent);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.2em;
 }
 
 .log-tally {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .tally-hits   { color: var(--hit-fg); }
@@ -299,7 +302,7 @@ button {
 
 .tally-total {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: normal;
 }
 
@@ -523,7 +526,7 @@ button {
   outline: none;
 }
 
-.add-target-form input[type="text"]:focus {
+.add-target-form input[type="text"]:focus-visible {
   border-color: var(--accent);
 }
 
@@ -539,8 +542,8 @@ button {
   border-color: var(--accent);
   color: var(--accent);
   white-space: nowrap;
-  padding: 6px 12px;
-  font-size: 10px;
+  padding: 9px 14px;
+  font-size: 11px;
 }
 
 #add-target-btn:hover {
@@ -556,7 +559,7 @@ button {
 
 .target-section-title {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding-bottom: 5px;
@@ -592,7 +595,7 @@ button {
 
 .sp-field label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -609,7 +612,7 @@ button {
   outline: none;
 }
 
-.sp-input:focus {
+.sp-input:focus-visible {
   border-color: var(--accent);
 }
 
@@ -634,7 +637,7 @@ button {
 
 .dmg-field label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -796,7 +799,7 @@ button {
   grid-template-columns: 66px 68px 1fr 74px auto;
   align-items: center;
   column-gap: 10px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   border: 1px solid;
   margin-bottom: 4px;
 }
@@ -808,7 +811,7 @@ button {
 
 .shot-roll-compact {
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .shot-roll-compact strong {
@@ -818,22 +821,23 @@ button {
 .shot.miss.compact .shot-roll-compact {
   grid-column: 3 / -1;
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .shot-location-compact {
   color: var(--text-hi);
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
 }
 
 .shot-damage-compact {
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .shot-damage-compact strong {
   color: var(--text-hi);
+  font-size: 14px;
 }
 
 /* ── Blocked hit cards (hit but fully stopped by SP) ─────────── */
@@ -855,7 +859,7 @@ button {
 
 .batch-set-label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -883,7 +887,7 @@ button {
   margin-top: 14px;
   padding-top: 8px;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-dim);
   letter-spacing: 0.05em;
 }
@@ -918,5 +922,31 @@ button {
 
   #targets-panel {
     border-top: 1px solid var(--border);
+  }
+
+  .site-header h1 {
+    font-size: 16px;
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .header-sub {
+    flex-basis: 100%;
+    font-size: 11px;
+  }
+
+  .log-params {
+    display: none;
+  }
+
+  .log-detail {
+    overflow-x: auto;
+  }
+
+  .shot.compact {
+    min-width: 480px;
   }
 }
