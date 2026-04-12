@@ -13,14 +13,12 @@
 
 set -e
 
-VERSION="1.2.2"
-RELEASE_URL="https://github.com/febrile42/cyberpunk-roller/releases/latest"
 BASE="https://raw.githubusercontent.com/febrile42/cyberpunk-roller/master"
 DEST="${1:-.}"
 
-echo "cyberpunk-roller v${VERSION}"
-echo "  release : ${RELEASE_URL}"
-echo "  dest    : ${DEST}"
+echo "cyberpunk-roller (latest)"
+echo "  source : ${BASE}"
+echo "  dest   : ${DEST}"
 echo ""
 
 fetch() {
@@ -53,4 +51,4 @@ fetch js/app.js
 fetch css/style.css
 
 echo ""
-echo "deployed v${VERSION} to: ${DEST}"
+echo "deployed to: ${DEST}"
