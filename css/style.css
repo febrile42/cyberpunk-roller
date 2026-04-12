@@ -437,7 +437,7 @@ button {
 
 .bullet-hit {
   display: grid;
-  grid-template-columns: 66px 82px 1fr 74px auto;
+  grid-template-columns: 66px 82px 1fr 90px auto;
   align-items: center;
   column-gap: 10px;
   color: var(--text);
@@ -804,7 +804,7 @@ button {
 
 .shot.compact {
   display: grid;
-  grid-template-columns: 66px 82px 1fr 74px auto;
+  grid-template-columns: 66px 82px 1fr 90px auto;
   align-items: center;
   column-gap: 10px;
   padding: 6px 10px;
