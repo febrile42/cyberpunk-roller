@@ -60,8 +60,8 @@ body {
 
 .site-header {
   background: var(--bg-panel);
-  border-bottom: 1px solid var(--border-hi);
-  padding: 10px 20px;
+  border-bottom: 1px solid var(--accent);
+  padding: 12px 20px;
 }
 
 .header-inner {
