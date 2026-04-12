@@ -72,14 +72,14 @@ body {
 
 .site-header h1 {
   color: var(--accent-hi);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   letter-spacing: 0.18em;
 }
 
 .header-sub {
   color: var(--text-dim);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 
