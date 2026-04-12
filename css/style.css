@@ -95,7 +95,7 @@ body {
 
 .app-layout {
   display: grid;
-  grid-template-columns: 290px 1fr 320px;
+  grid-template-columns: 334px 1fr 368px;
   min-height: 0;
   overflow: hidden;
 }
