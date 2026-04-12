@@ -131,8 +131,11 @@ body {
 
 .empty-state {
   color: var(--text-dim);
-  font-size: 11px;
+  font-size: 12px;
   font-style: italic;
+  padding: 20px 0;
+  text-align: center;
+  letter-spacing: 0.05em;
 }
 
 /* ── Form — fire mode fieldset ──────────────────────────────── */
