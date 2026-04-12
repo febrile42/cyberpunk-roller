@@ -715,6 +715,33 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/'/g,  '&#039;');
   }
 
+  // ── Theme cycling ────────────────────────────────────────────────────────
+  // Secret: click the "// CYBERPUNK 2020" header text to cycle themes.
+  // Active theme is persisted in a session cookie (cleared when browser closes).
+
+  const THEMES      = ['', 'theme-neural', 'theme-grit', 'theme-phosphor'];
+  const THEME_COOKIE = 'cp2020theme';
+
+  function currentThemeIndex() {
+    for (let i = 1; i < THEMES.length; i++) {
+      if (document.documentElement.classList.contains(THEMES[i])) return i;
+    }
+    return 0;
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.classList.remove(...THEMES.filter(Boolean));
+    if (theme) document.documentElement.classList.add(theme);
+    document.cookie = THEME_COOKIE + '=' + encodeURIComponent(theme) + ';path=/';
+  }
+
+  const headerSub = document.querySelector('.header-sub');
+  if (headerSub) {
+    headerSub.addEventListener('click', () => {
+      applyTheme(THEMES[(currentThemeIndex() + 1) % THEMES.length]);
+    });
+  }
+
   // ── Initialise ───────────────────────────────────────────────────────────
 
   updateFireBtnText();
