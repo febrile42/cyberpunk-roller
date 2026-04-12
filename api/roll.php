@@ -36,6 +36,15 @@ if ($targetName !== null && strlen($targetName) > 100) {
     $targetName = substr($targetName, 0, 100);
 }
 
+// Armor-piercing mode: 'reg' (default), 'ap' (SP/2), 'quarter' (SP/4)
+$apMode = 'reg';
+if (isset($input['apMode'])) {
+    $candidate = trim((string)$input['apMode']);
+    if (in_array($candidate, ['reg', 'ap', 'quarter'], true)) {
+        $apMode = $candidate;
+    }
+}
+
 $missing = [];
 if ($mode === '')         $missing[] = 'mode';
 if ($skill === null)      $missing[] = 'skill';
@@ -71,6 +80,7 @@ $params = [
     'skill'      => $skill,
     'difficulty' => $difficulty,
     'damage'     => $damage,
+    'apMode'     => $apMode,
 ];
 if ($targetName !== null && $targetName !== '') {
     $params['targetName'] = $targetName;
@@ -85,7 +95,7 @@ switch ($mode) {
         $armor     = null;
 
         if ($result['hit'] && $workingSP !== null) {
-            $armor = applyArmorToHit($result['location']['location'], $result['damage']['total'], $workingSP);
+            $armor = applyArmorToHit($result['location']['location'], $result['damage']['total'], $workingSP, $apMode);
         }
 
         $shots    = [formatShot($result, 1, $armor)];
@@ -117,7 +127,7 @@ switch ($mode) {
             $armor  = null;
 
             if ($result['hit'] && $workingSP !== null) {
-                $armor = applyArmorToHit($result['location']['location'], $result['damage']['total'], $workingSP);
+                $armor = applyArmorToHit($result['location']['location'], $result['damage']['total'], $workingSP, $apMode);
             }
 
             $shots[] = formatShot($result, $i + 1, $armor);
@@ -155,7 +165,7 @@ switch ($mode) {
             foreach ($result['hits'] as $bullet) {
                 $rawDmg    = $bullet['damage']['total'];
                 $loc       = $bullet['location']['location'];
-                $armorInfo = ($workingSP !== null) ? applyArmorToHit($loc, $rawDmg, $workingSP) : null;
+                $armorInfo = ($workingSP !== null) ? applyArmorToHit($loc, $rawDmg, $workingSP, $apMode) : null;
                 $bullets[] = [
                     'location'  => $loc,
                     'rawDamage' => $rawDmg,

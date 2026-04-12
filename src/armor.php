@@ -9,25 +9,38 @@
  *
  * SP of 0 means no armor — all damage passes through, SP stays at 0.
  *
- * @param int $damage  Raw damage from a successful hit
- * @param int $sp      Current Stopping Power of the hit location
+ * $apMode controls the effective SP used for the penetration check:
+ *   'reg'     — use full SP (standard rules)
+ *   'ap'      — use ceil(SP/2) as the penetration threshold
+ *   'quarter' — use ceil(SP/4) as the penetration threshold
+ * SP degradation always applies to the real SP value.
+ *
+ * @param int    $damage  Raw damage from a successful hit
+ * @param int    $sp      Current Stopping Power of the hit location
+ * @param string $apMode  Armor-piercing mode: 'reg' | 'ap' | 'quarter'
  * @return array {
  *   passthrough: int   Damage delivered to the target (0 if blocked)
  *   newSP:       int   SP value after this hit
  *   penetrated:  bool  Whether the armor was penetrated
  * }
  */
-function applyDamage(int $damage, int $sp): array
+function applyDamage(int $damage, int $sp, string $apMode = 'reg'): array
 {
-    if ($sp <= 0 || $damage > $sp) {
-        $passthrough = max(0, $damage - $sp);
-        $newSP       = max(0, $sp - ($damage > $sp ? 1 : 0));
+    $effectiveSP = match($apMode) {
+        'ap'      => (int)ceil($sp / 2),
+        'quarter' => (int)ceil($sp / 4),
+        default   => $sp,
+    };
+
+    if ($effectiveSP <= 0 || $damage > $effectiveSP) {
+        $passthrough = max(0, $damage - $effectiveSP);
         $penetrated  = true;
 
-        // If SP was already 0, no degradation occurs (nothing to degrade)
+        // If real SP was already 0, no degradation occurs (nothing to degrade)
         if ($sp <= 0) {
-            $newSP      = 0;
-            $penetrated = true;
+            $newSP = 0;
+        } else {
+            $newSP = max(0, $sp - 1);
         }
 
         return [
@@ -37,7 +50,7 @@ function applyDamage(int $damage, int $sp): array
         ];
     }
 
-    // Damage does not exceed SP — fully blocked
+    // Damage does not exceed effective SP — fully blocked
     return [
         'passthrough' => 0,
         'newSP'       => $sp,
@@ -90,12 +103,12 @@ function defaultSP(int $value = 0): array
  *   penetrated:  bool  Whether armor was penetrated
  * }
  */
-function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP): ?array
+function applyArmorToHit(string $location, int $rawDamage, ?array &$workingSP, string $apMode = 'reg'): ?array
 {
     if ($workingSP === null) return null;
     $locKey             = locationKey($location);
     $locSP              = (int)($workingSP[$locKey] ?? 0);
-    $result             = applyDamage($rawDamage, $locSP);
+    $result             = applyDamage($rawDamage, $locSP, $apMode);
     $workingSP[$locKey] = $result['newSP'];
 
     return [
