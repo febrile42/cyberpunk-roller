@@ -12,7 +12,7 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CP2020 Combat Calculator</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>">
 </head>
 <body>
 
@@ -138,6 +138,6 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=<?= filemtime(__DIR__ . '/js/app.js') ?>"></script>
 </body>
 </html>
