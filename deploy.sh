@@ -23,7 +23,7 @@ echo ""
 
 fetch() {
     printf "  fetching %s ... " "$1"
-    curl -fsSL "$BASE/$1" -o "$DEST/$1"
+    curl -fsSL "$BASE/$1?$(date +%s)" -o "$DEST/$1"
     echo "ok"
 }
 
