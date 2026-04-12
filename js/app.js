@@ -749,6 +749,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── New combat reset modal ───────────────────────────────────────────────
+
+  const resetOverlay    = document.getElementById('combat-reset-overlay');
+  const resetCancelBtn  = document.getElementById('reset-cancel-btn');
+  const resetConfirmBtn = document.getElementById('reset-confirm-btn');
+  const newCombatLink   = document.getElementById('new-combat-link');
+
+  function openResetModal() {
+    resetOverlay.hidden = false;
+    resetCancelBtn.focus();
+  }
+
+  function closeResetModal() {
+    resetOverlay.hidden = true;
+  }
+
+  function resetAllCombat() {
+    // Wipe localStorage (targets, SP, active target)
+    localStorage.removeItem(LS_KEY);
+
+    // Reset fire log state
+    _logEvents   = [];
+    _expandedIds.clear();
+    _initialLoad = true;
+
+    // Purge server-side fire events (silently — DB is optional)
+    fetch('api/clear-events.php', { method: 'POST' }).catch(() => {});
+
+    // Re-render both panels
+    renderFireLog([]);
+    renderTargets();
+
+    closeResetModal();
+  }
+
+  if (newCombatLink) {
+    newCombatLink.addEventListener('click', e => {
+      e.preventDefault();
+      openResetModal();
+    });
+  }
+
+  resetCancelBtn.addEventListener('click', closeResetModal);
+  resetConfirmBtn.addEventListener('click', resetAllCombat);
+
+  // Dismiss on overlay background click
+  resetOverlay.addEventListener('click', e => {
+    if (e.target === resetOverlay) closeResetModal();
+  });
+
+  // Dismiss on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !resetOverlay.hidden) closeResetModal();
+  });
+
   // ── Initialise ───────────────────────────────────────────────────────────
 
   updateFireBtnText();
