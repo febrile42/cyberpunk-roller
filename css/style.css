@@ -262,7 +262,7 @@ body {
   transition: background 0.1s, color 0.1s, border-color 0.1s;
   white-space: nowrap;
   flex-shrink: 0;
-  min-width: 3em;
+  min-width: 4em;
   text-align: center;
   /* Reg state: neutral, matches input */
   background: var(--bg-input);
