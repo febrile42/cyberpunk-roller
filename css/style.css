@@ -278,6 +278,7 @@ body {
   background: var(--miss-bg);
   color: var(--miss-fg);
   border-color: var(--miss-fg);
+  border-left: 1px solid var(--miss-fg);
 }
 
 /* ── Log AP badge (shown in summary row for AP / 1/4 events) ─── */
