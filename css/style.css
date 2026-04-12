@@ -950,3 +950,226 @@ button {
     min-width: 480px;
   }
 }
+
+/* ── Themes ──────────────────────────────────────────────────────────────── */
+
+/* ── Theme A: Neural Interface (cyan/magenta HUD) ────────────────────────── */
+
+html.theme-neural {
+  --bg:        #080c10;
+  --bg-panel:  #0b1018;
+  --bg-input:  #111820;
+  --border:    #1a2535;
+  --border-hi: #233040;
+  --text:      #7a9ab8;
+  --text-hi:   #b8d4f0;
+  --text-dim:  #4a6880;
+  --accent:    #00c8e8;
+  --accent-hi: #30e8ff;
+  --hit-bg:    #051510;
+  --hit-fg:    #00e8a0;
+  --hit-bd:    #0a3025;
+  --miss-bg:   #100510;
+  --miss-fg:   #cc00aa;
+  --miss-bd:   #380830;
+}
+
+html.theme-neural body {
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,200,232,.012) 2px, rgba(0,200,232,.012) 4px
+  );
+}
+
+html.theme-neural .site-header {
+  box-shadow: 0 0 20px rgba(0,200,232,.07);
+}
+
+html.theme-neural .site-header h1 {
+  text-shadow: 0 0 14px rgba(0,232,255,.45);
+}
+
+html.theme-neural .panel-title {
+  text-shadow: 0 0 8px rgba(0,200,232,.35);
+}
+
+html.theme-neural .panel-title::before { content: '[ '; }
+html.theme-neural .panel-title::after  { content: ' ]'; }
+
+html.theme-neural .form-field input[type="number"],
+html.theme-neural .form-field input[type="text"] {
+  border-left: 2px solid var(--accent);
+}
+
+html.theme-neural #fire-btn {
+  box-shadow: 0 0 16px rgba(0,200,232,.4), 0 0 32px rgba(0,200,232,.12);
+}
+
+html.theme-neural #fire-btn:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(0,232,255,.55);
+}
+
+html.theme-neural #add-target-btn {
+  box-shadow: 0 0 8px rgba(0,200,232,.12);
+}
+
+html.theme-neural .target-row.active-target {
+  box-shadow: inset 0 0 0 1px rgba(0,200,232,.06);
+}
+
+/* ── Theme B: Street Grit (heavier borders, danger-red fire) ─────────────── */
+
+html.theme-grit {
+  --bg:        #060606;
+  --bg-panel:  #0c0c0c;
+  --bg-input:  #131313;
+  --border:    #222222;
+  --border-hi: #2e2e2e;
+  --text:      #909090;
+  --text-hi:   #cccccc;
+  --text-dim:  #666666;
+  --accent:    #d4a800;
+  --accent-hi: #f0c000;
+  --hit-fg:    #55bb55;
+  --hit-bg:    #060d06;
+  --hit-bd:    #162016;
+  --miss-fg:   #cc3333;
+  --miss-bg:   #100606;
+  --miss-bd:   #2e1010;
+}
+
+html.theme-grit .panel,
+html.theme-grit .log-row,
+html.theme-grit #mode-fieldset,
+html.theme-grit .shot,
+html.theme-grit .log-detail,
+html.theme-grit .shared-sp-row,
+html.theme-grit .target-sp-row,
+html.theme-grit .target-dmg-row {
+  border-width: 2px;
+}
+
+html.theme-grit .form-field input[type="number"],
+html.theme-grit .form-field input[type="text"],
+html.theme-grit .add-target-form input[type="text"],
+html.theme-grit .sp-input,
+html.theme-grit .target-badge {
+  border-width: 2px;
+}
+
+html.theme-grit .target-row {
+  border-width: 2px;
+}
+
+html.theme-grit #fire-btn {
+  background:    #dd4400;
+  border-color:  #ff5500;
+  color:         #fff;
+  font-size:     13px;
+  white-space:   nowrap;
+}
+
+html.theme-grit #fire-btn:hover:not(:disabled) {
+  background: #ff5500;
+}
+
+html.theme-grit .radio-option {
+  border-bottom: 1px solid var(--border);
+  padding: 7px 0;
+}
+
+html.theme-grit .radio-option:last-child {
+  border-bottom: none;
+}
+
+html.theme-grit .radio-label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* ── Theme C: Phosphor Terminal (green monochrome CRT) ───────────────────── */
+
+html.theme-phosphor {
+  --bg:        #000000;
+  --bg-panel:  #020402;
+  --bg-input:  #040804;
+  --border:    #0d1a0d;
+  --border-hi: #143314;
+  --text:      #1a7a1a;
+  --text-hi:   #33cc33;
+  --text-dim:  #0d4d0d;
+  --accent:    #33ff33;
+  --accent-hi: #66ff66;
+  --hit-bg:    #010801;
+  --hit-fg:    #33ff33;
+  --hit-bd:    #0a1e0a;
+  --miss-bg:   #080101;
+  --miss-fg:   #ff3333;
+  --miss-bd:   #1e0a0a;
+  --crit-fg:   #ffff00;
+}
+
+html.theme-phosphor body {
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 1px,
+    rgba(0,0,0,.15) 1px, rgba(0,0,0,.15) 2px
+  );
+}
+
+html.theme-phosphor .site-header h1,
+html.theme-phosphor .panel-title,
+html.theme-phosphor .log-mode,
+html.theme-phosphor .tally-hits,
+html.theme-phosphor #fire-btn {
+  text-shadow: 0 0 6px rgba(51,255,51,.5);
+}
+
+html.theme-phosphor #fire-btn {
+  box-shadow: 0 0 14px rgba(51,255,51,.3);
+  text-shadow: none;
+}
+
+html.theme-phosphor .panel-title::before { content: '╔═[ '; }
+html.theme-phosphor .panel-title::after  { content: ' ]'; }
+
+html.theme-phosphor .form-field label::before {
+  content: '> ';
+}
+
+html.theme-phosphor .form-field input[type="number"],
+html.theme-phosphor .form-field input[type="text"],
+html.theme-phosphor .sp-input,
+html.theme-phosphor .add-target-form input[type="text"] {
+  color: var(--accent);
+}
+
+/* ASCII-style radio buttons */
+html.theme-phosphor .radio-option input[type="radio"] {
+  display: none;
+}
+
+html.theme-phosphor .radio-option::before {
+  content: '( ) ';
+  color: var(--text-hi);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+html.theme-phosphor .radio-option:has(input[type="radio"]:checked)::before {
+  content: '(●) ';
+  color: var(--accent);
+  text-shadow: 0 0 6px rgba(51,255,51,.5);
+}
+
+/* Blinking cursor on header subtitle */
+html.theme-phosphor .header-sub::after {
+  content: ' █';
+  animation: phosphor-blink 1.2s step-end infinite;
+}
+
+@keyframes phosphor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

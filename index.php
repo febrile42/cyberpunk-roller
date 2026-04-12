@@ -13,6 +13,7 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CP2020 Combat Calculator</title>
   <link rel="stylesheet" href="css/style.css">
+  <script>(function(){var m=document.cookie.match(/(?:^|;\s*)cp2020theme=([^;]*)/);if(m&&m[1])document.documentElement.className=decodeURIComponent(m[1]);})();</script>
 </head>
 <body>
 
