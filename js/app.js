@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 'use strict';
 
+// Apply saved theme immediately (before DOMContentLoaded) to avoid flash.
+// Inline scripts are blocked by CSP default-src 'self', so this lives here.
+(function () {
+  var m = document.cookie.match(/(?:^|;\s*)cp2020theme=([^;]*)/);
+  document.documentElement.className = (m && m[1]) ? decodeURIComponent(m[1]) : 'theme-grit';
+}());
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // ── Constants ───────────────────────────────────────────────────────────
@@ -719,25 +726,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Secret: click the "// CYBERPUNK 2020" header text to cycle themes.
   // Active theme is persisted in a session cookie (cleared when browser closes).
 
-  const THEMES      = ['', 'theme-neural', 'theme-grit', 'theme-phosphor'];
+  const THEMES       = ['theme-grit', 'theme-neural', 'theme-phosphor'];
   const THEME_COOKIE = 'cp2020theme';
 
   function currentThemeIndex() {
-    for (let i = 1; i < THEMES.length; i++) {
+    for (let i = 0; i < THEMES.length; i++) {
       if (document.documentElement.classList.contains(THEMES[i])) return i;
     }
     return 0;
   }
 
   function applyTheme(theme) {
-    document.documentElement.classList.remove(...THEMES.filter(Boolean));
-    if (theme) document.documentElement.classList.add(theme);
+    document.documentElement.classList.remove(...THEMES);
+    document.documentElement.classList.add(theme);
     document.cookie = THEME_COOKIE + '=' + encodeURIComponent(theme) + ';path=/';
   }
 
-  const headerSub = document.querySelector('.header-sub');
-  if (headerSub) {
-    headerSub.addEventListener('click', () => {
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
       applyTheme(THEMES[(currentThemeIndex() + 1) % THEMES.length]);
     });
   }
