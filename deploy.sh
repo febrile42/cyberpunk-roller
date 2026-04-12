@@ -13,8 +13,8 @@
 
 set -e
 
-VERSION="1.2.0"
-RELEASE_URL="https://github.com/febrile42/cyberpunk-roller/releases/tag/v${VERSION}"
+VERSION="1.2.1"
+RELEASE_URL="https://github.com/febrile42/cyberpunk-roller/releases/latest"
 BASE="https://raw.githubusercontent.com/febrile42/cyberpunk-roller/master"
 DEST="${1:-.}"
 
