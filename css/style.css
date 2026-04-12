@@ -271,6 +271,7 @@ body {
   background: transparent;
   color: var(--accent-hi);
   border-color: var(--accent);
+  border-left: 1px solid var(--accent);
 }
 
 .ap-toggle.ap-mode-quarter {
