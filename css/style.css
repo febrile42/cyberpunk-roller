@@ -539,8 +539,8 @@ button {
   border-color: var(--accent);
   color: var(--accent);
   white-space: nowrap;
-  padding: 6px 12px;
-  font-size: 10px;
+  padding: 9px 14px;
+  font-size: 11px;
 }
 
 #add-target-btn:hover {
