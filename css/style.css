@@ -799,7 +799,7 @@ button {
   grid-template-columns: 66px 68px 1fr 74px auto;
   align-items: center;
   column-gap: 10px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   border: 1px solid;
   margin-bottom: 4px;
 }
@@ -811,7 +811,7 @@ button {
 
 .shot-roll-compact {
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .shot-roll-compact strong {
@@ -821,22 +821,23 @@ button {
 .shot.miss.compact .shot-roll-compact {
   grid-column: 3 / -1;
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .shot-location-compact {
   color: var(--text-hi);
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
 }
 
 .shot-damage-compact {
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .shot-damage-compact strong {
   color: var(--text-hi);
+  font-size: 14px;
 }
 
 /* ── Blocked hit cards (hit but fully stopped by SP) ─────────── */
