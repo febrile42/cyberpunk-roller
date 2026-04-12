@@ -49,7 +49,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -112,7 +112,7 @@ body {
 
 .panel-title {
   color: var(--accent);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -123,7 +123,7 @@ body {
 
 .panel-title-sub {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: normal;
   letter-spacing: 0.1em;
 }
@@ -145,7 +145,7 @@ body {
 
 #mode-fieldset legend {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 0 5px;
@@ -179,7 +179,7 @@ body {
 .form-field label {
   display: block;
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -556,7 +556,7 @@ button {
 
 .target-section-title {
   color: var(--text-dim);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding-bottom: 5px;
@@ -592,7 +592,7 @@ button {
 
 .sp-field label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -634,7 +634,7 @@ button {
 
 .dmg-field label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -855,7 +855,7 @@ button {
 
 .batch-set-label {
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -883,7 +883,7 @@ button {
   margin-top: 14px;
   padding-top: 8px;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-dim);
   letter-spacing: 0.05em;
 }
