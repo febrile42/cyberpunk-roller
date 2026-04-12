@@ -220,6 +220,87 @@ body {
   margin-top: 3px;
 }
 
+/* ── Form — damage field split row with AP toggle ───────────── */
+
+.damage-field-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.damage-field-header label {
+  margin-bottom: 0;
+}
+
+.ap-label {
+  color: var(--text-dim);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.damage-field-row {
+  display: flex;
+}
+
+.damage-field-row input[type="text"] {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+}
+
+.ap-toggle {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.14em;
+  padding: 6px 10px;
+  border: 1px solid var(--border-hi);
+  border-left: none;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  /* Reg state: neutral, matches input */
+  background: var(--bg-input);
+  color: var(--text-dim);
+}
+
+.ap-toggle.ap-mode-ap {
+  background: transparent;
+  color: var(--accent-hi);
+  border-color: var(--accent);
+}
+
+.ap-toggle.ap-mode-quarter {
+  background: var(--miss-bg);
+  color: var(--miss-fg);
+  border-color: var(--miss-fg);
+}
+
+/* ── Log AP badge (shown in summary row for AP / 1/4 events) ─── */
+
+.log-ap-badge {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  padding: 1px 5px;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.log-ap-badge.ap-mode-ap {
+  color: var(--accent-hi);
+  border: 1px solid var(--accent);
+}
+
+.log-ap-badge.ap-mode-quarter {
+  color: var(--miss-fg);
+  border: 1px solid var(--miss-fg);
+  background: var(--miss-bg);
+}
+
 /* ── Form — buttons ─────────────────────────────────────────── */
 
 .form-actions {
@@ -274,7 +355,7 @@ button {
 
 .log-row {
   display: grid;
-  grid-template-columns: 16px 52px 1fr auto auto;
+  grid-template-columns: 16px 52px 1fr auto auto auto;
   align-items: center;
   column-gap: 10px;
   padding: 7px 10px;

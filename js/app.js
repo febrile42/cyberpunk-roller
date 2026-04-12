@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let _logEvents   = [];          // last poll result, used for re-render on toggle
   let _expandedIds = new Set();   // event IDs currently expanded
   let _initialLoad = true;        // auto-expand newest event on first fetch
+  let _apMode      = 'reg';       // 'reg' | 'ap' | 'quarter'
 
   // ── localStorage state ───────────────────────────────────────────────────
 
@@ -189,6 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
     saveState(state);
   }
 
+  // ── AP toggle ────────────────────────────────────────────────────────────
+
+  const apToggle  = document.getElementById('ap-toggle');
+  const AP_MODES  = ['reg', 'ap', 'quarter'];
+  const AP_LABELS = { reg: 'Reg', ap: 'AP', quarter: '1/4' };
+
+  function updateApToggle() {
+    apToggle.textContent = AP_LABELS[_apMode];
+    apToggle.className   = 'ap-toggle' + (_apMode !== 'reg' ? ` ap-mode-${_apMode}` : '');
+  }
+
+  apToggle.addEventListener('click', () => {
+    _apMode = AP_MODES[(AP_MODES.indexOf(_apMode) + 1) % AP_MODES.length];
+    updateApToggle();
+  });
+
   // ── Mode switching & fire button label ──────────────────────────────────
 
   form.querySelectorAll('input[name="mode"]').forEach(radio => {
@@ -257,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isNaN(difficulty) || difficulty < 1) return renderError('Difficulty must be a positive integer.');
     if (!damage)                       return renderError('Damage notation is required (e.g. 3D6+4).');
 
-    const payload = { mode, skill, difficulty, damage };
+    const payload = { mode, skill, difficulty, damage, apMode: _apMode };
 
     if (mode === 'auto') {
       const shots = parseInt(form.shots.value, 10);
@@ -355,6 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const p        = ev.params;
       const tgt      = p.targetName ? ` · ${escapeHtml(p.targetName)}` : '';
       const params   = `${escapeHtml(p.damage)} · sk:${p.skill} dif:${p.difficulty}${tgt}`;
+      const apMode   = (p.apMode && p.apMode !== 'reg') ? p.apMode : null;
+      const apBadge  = apMode
+        ? `<span class="log-ap-badge ap-mode-${escapeHtml(apMode)}">${apMode === 'quarter' ? '1/4' : 'AP'}</span>`
+        : `<span></span>`;
 
       html += `<div class="log-event">`;
       html += `<div class="log-row${expanded ? ' expanded' : ''}" data-id="${ev.id}">`;
@@ -362,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `<span class="log-mode">${modeLabel[ev.mode] || escapeHtml(ev.mode).toUpperCase()}</span>`;
       html += `<span class="log-tally">${buildLogTally(ev)}</span>`;
       html += `<span class="log-params">${params}</span>`;
+      html += apBadge;
       html += `<span class="log-time">${firedAtTime(ev.fired_at)}</span>`;
       html += `</div>`;
 

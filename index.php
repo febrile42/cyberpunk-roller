@@ -67,8 +67,14 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
         </div>
 
         <div class="form-field">
-          <label for="damage">Damage Dice</label>
-          <input type="text" id="damage" name="damage" placeholder="e.g. 3D6+4" value="2D6">
+          <div class="damage-field-header">
+            <label for="damage">Damage Dice</label>
+            <span class="ap-label" title="Armor Piercing">AP</span>
+          </div>
+          <div class="damage-field-row">
+            <input type="text" id="damage" name="damage" placeholder="e.g. 3D6+4" value="2D6">
+            <button type="button" id="ap-toggle" class="ap-toggle" title="Armor Piercing">Reg</button>
+          </div>
           <span class="field-hint">Format: xDn or xDn&plusmn;mod</span>
         </div>
 
