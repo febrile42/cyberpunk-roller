@@ -910,6 +910,120 @@ button {
   color: var(--accent);
 }
 
+/* ── New combat link ─────────────────────────────────────────── */
+
+.new-combat-wrap {
+  padding-top: 10px;
+  padding-bottom: 2px;
+}
+
+.new-combat-link {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.new-combat-link:hover {
+  color: var(--miss-fg);
+}
+
+.new-combat-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+  animation: crt-scan 15s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes crt-scan {
+  0%   { left: -70%; opacity: 0; }
+  2%   { left: -70%; opacity: 1; }
+  10%  { left: 130%; opacity: 1; }
+  11%  { left: 130%; opacity: 0; }
+  100% { left: 130%; opacity: 0; }
+}
+
+/* ── Combat reset modal ──────────────────────────────────────── */
+
+.combat-reset-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.combat-reset-overlay[hidden] {
+  display: none;
+}
+
+.combat-reset-dialog {
+  background: var(--bg-panel);
+  border: 1px solid var(--miss-fg);
+  padding: 26px 28px 22px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+.reset-dialog-title {
+  color: var(--miss-fg);
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  margin-bottom: 14px;
+}
+
+.reset-dialog-body {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+.reset-dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+#reset-cancel-btn {
+  background: transparent;
+  border-color: var(--border-hi);
+  color: var(--text-dim);
+  padding: 9px 18px;
+  font-size: 13px;
+}
+
+#reset-cancel-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+#reset-confirm-btn {
+  background: var(--miss-bg);
+  border-color: var(--miss-fg);
+  color: var(--miss-fg);
+  padding: 9px 18px;
+  font-size: 13px;
+}
+
+#reset-confirm-btn:hover {
+  background: var(--miss-fg);
+  color: var(--bg);
+}
+
 /* ── Responsive: stack columns on narrow screens ─────────────── */
 
 @media (max-width: 860px) {

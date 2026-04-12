@@ -80,6 +80,9 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
         <div id="active-target-indicator" class="active-target-indicator"></div>
 
       </form>
+      <div class="new-combat-wrap">
+        <a href="#" class="new-combat-link" id="new-combat-link">// start new combat</a>
+      </div>
       <div class="panel-credit">
         <a href="https://github.com/febrile42/cyberpunk-roller" target="_blank" rel="noopener noreferrer">github.com/febrile42
         · <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener noreferrer">PolyForm NC 1.0</a>
@@ -117,6 +120,17 @@ header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
   </section>
 
   </main>
+
+  <div id="combat-reset-overlay" class="combat-reset-overlay" hidden>
+    <div class="combat-reset-dialog" role="alertdialog" aria-modal="true" aria-labelledby="reset-dialog-title">
+      <div class="reset-dialog-title" id="reset-dialog-title">⚠ COMBAT RESET</div>
+      <p class="reset-dialog-body">All combat data will be purged — fire log, targets, and armor records. This cannot be undone.</p>
+      <div class="reset-dialog-actions">
+        <button type="button" id="reset-cancel-btn">CANCEL</button>
+        <button type="button" id="reset-confirm-btn">LET'S GO, CHOOM</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/app.js"></script>
 </body>
